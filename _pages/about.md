@@ -9,7 +9,7 @@ redirect_from:
 I am a third year udergraduate student from [The Chinese University of Hong Kong](https://www.cuhk.edu.hk/chinese/index.html). My major is [Economics](https://www.econ.cuhk.edu.hk/en/home/). My research interest includes development economics, quantative economic history (especially in the context of Chinese History).
 
 You can contact me in following ways:
-[Wechat](q263680731) / [QQ](3406932208) / [Email](kishtonzhang@link.cuhk.edu.hk)
+[Wechat](../images/Wechat_qrcode.jpg) / [Email](kishtonzhang@link.cuhk.edu.hk)
 
 
 
