@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Hi!"
+title: "Hi! This is Kishtonzhang's (张硕洵) personal website. "
 author_profile: true
 redirect_from: 
   - /about/
