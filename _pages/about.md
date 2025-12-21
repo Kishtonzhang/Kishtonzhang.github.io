@@ -6,7 +6,7 @@ redirect_from:
   - /about/
   - /about.html
 ---
-I am a third year udergraduate student from [The Chinese University of Hong Kong](https://www.cuhk.edu.hk/chinese/index.html). My major is [Economics](https://www.econ.cuhk.edu.hk/en/home/). My research interest includes development economics, quantative economic history (especially in the context of Chinese History).
+I am a third year undergraduate student from [The Chinese University of Hong Kong](https://www.cuhk.edu.hk/chinese/index.html). My major is [Economics](https://www.econ.cuhk.edu.hk/en/home/). My research interest includes development economics, quantative economic history (especially in the context of Chinese History).
 
 
 
