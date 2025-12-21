@@ -10,7 +10,7 @@ I am a third year udergraduate student from [The Chinese University of Hong Kong
 
 
 
-You can contact me in following ways:<br>[Wechat](../images/Wechat_qrcode.jpg)<br>[Email](kishtonzhang@link.cuhk.edu.hk)
+You can contact me in following ways:<br>[Wechat](../images/Wechat_qrcode.jpg)<br> Email:kishtonzhang@link.cuhk.edu.hk
 
 
 
