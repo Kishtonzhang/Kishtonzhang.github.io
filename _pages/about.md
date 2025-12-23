@@ -18,7 +18,9 @@ You can contact me in following ways:<br>[Wechat](../images/Wechat_qrcode.jpg): 
 The followings are my course work:<br>
 1: [Beauty In Distance: How Distance Affects
 Housing Prices around Foreign-owned
-Private Hospitals in Shanghai](../assets/econ2901_report.pdf).
+Private Hospitals in Shanghai](../assets/econ2901_report.pdf).<br>
+2: [“Being a good Party official”: Forecasting 
+government officials’ promotion in China](../assets/econ4130_report.pdf)
 
 
 
