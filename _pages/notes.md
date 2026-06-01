@@ -5,4 +5,4 @@ permalink: /notes/
 author_profile: true
 ---
 
-- [Microeconomics_1]({{ site.baseurl }}/notes/microeconomics-1/)
+- [Microeconomics_1](/notes/microeconomics-1/)
