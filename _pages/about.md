@@ -13,8 +13,6 @@ You can contact me in following ways:<br>
 Email: [kishtonzhang@link.cuhk.edu.hk](mailto:kishtonzhang@link.cuhk.edu.hk)<br>
 [公众号](https://mp.weixin.qq.com/s/z0jnAwvY1XEzjKS1rRtdwQ)
 
-Course notes and study materials are on the **[Notes](/notes/)** page. To add new notes, upload Markdown files to `_notes/` or PDFs to `files/notes/` in [this repository](https://github.com/Kishtonzhang/Kishtonzhang.github.io).
-
 The followings are my course work:<br>
 1: [Beauty In Distance: How Distance Affects
 Housing Prices around Foreign-owned
