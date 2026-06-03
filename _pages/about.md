@@ -18,6 +18,7 @@ The followings are my course work:<br>
 Housing Prices around Foreign-owned
 Private Hospitals in Shanghai](../assets/econ2901_report.pdf).<br>
 - In this paper, I was mainly responsible for the empirical methods development, data collection, regression, and writing the "data" part. <br>
+
 2: [“Being a good Party official”: Forecasting 
 government officials’ promotion in China](../assets/econ4130_report.pdf). <br>
 - This is my final paper for ECON4130. I was primarily responsible for proposing the research topic and methodology, as well as for the empirical analysis and writing of the first part.
