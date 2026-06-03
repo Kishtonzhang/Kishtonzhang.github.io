@@ -3,27 +3,27 @@ permalink: /
 title: "Hi! This is Kishtonzhang's (张硕洵) personal website. "
 author_profile: true
 redirect_from: 
-  - /about/
-  - /about.html
+ - /about/
+ - /about.html
 ---
 I am a third year undergraduate student from [The Chinese University of Hong Kong](https://www.cuhk.edu.hk/chinese/index.html). My major is [Economics](https://www.econ.cuhk.edu.hk/en/home/). My research interest includes development economics, quantative economic history (especially in the context of Chinese History).
 
-You can contact me in following ways:<br>
-[Wechat](../images/Wechat_qrcode.jpg): q263680731<br>
-Email: [kishtonzhang@link.cuhk.edu.hk](mailto:kishtonzhang@link.cuhk.edu.hk)<br>
+You can contact me in following ways: 
+[Wechat](../images/Wechat_qrcode.jpg): q263680731 
+Email: [kishtonzhang@link.cuhk.edu.hk](mailto:kishtonzhang@link.cuhk.edu.hk) 
 [公众号](https://mp.weixin.qq.com/s/z0jnAwvY1XEzjKS1rRtdwQ)
 
-The followings are my course work:<br>
+The followings are my course work: 
 1: [Beauty In Distance: How Distance Affects
 Housing Prices around Foreign-owned
-Private Hospitals in Shanghai](../assets/econ2901_report.pdf).<br>
-- In this paper, I was mainly responsible for the empirical methods development, data collection, regression, and writing the "data" part. <br>
+Private Hospitals in Shanghai](../assets/econ2901_report.pdf). 
+- In this paper, I was mainly responsible for the empirical methods development, data collection, regression, and writing the "data" part. 
 
 2: [“Being a good Party official”: Forecasting 
-government officials’ promotion in China](../assets/econ4130_report.pdf). <br>
-- This is my final paper for ECON4130. I was primarily responsible for proposing the research topic and methodology, as well as for the empirical analysis and writing of the first part.<br>
+government officials’ promotion in China](../assets/econ4130_report.pdf). 
+- This is my final paper for ECON4130. I was primarily responsible for proposing the research topic and methodology, as well as for the empirical analysis and writing of the first part. 
 
-3: ["The long-term effects of the Tusi system on firm entry- The role of Targeted Poverty Alleviation"](../assets/The long-term effects of the Tusi system on firm entry- The role of Targeted Poverty Alleviation.pdf). <br>
+3: ["The long-term effects of the Tusi system on firm entry- The role of Targeted Poverty Alleviation"](../assets/The%20long-term%20effects%20of%20the%20Tusi%20system%20on%20firm%20entry-%20The%20role%20of%20Targeted%20Poverty%20Alleviation.pdf). 
 - In this paper, I was responsible for the whole empirical methods part.
 
 ____
