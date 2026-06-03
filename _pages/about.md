@@ -21,4 +21,7 @@ Private Hospitals in Shanghai](../assets/econ2901_report.pdf).<br>
 
 2: [“Being a good Party official”: Forecasting 
 government officials’ promotion in China](../assets/econ4130_report.pdf). <br>
-- This is my final paper for ECON4130. I was primarily responsible for proposing the research topic and methodology, as well as for the empirical analysis and writing of the first part.
+- This is my final paper for ECON4130. I was primarily responsible for proposing the research topic and methodology, as well as for the empirical analysis and writing of the first part.<br>
+
+3. ["The long-term effects of the Tusi system on firm entry- The role of Targeted Poverty Alleviation"](..assets/The long-term effects of the Tusi system on firm entry- The role of Targeted Poverty Alleviation.pdf).<br>
+- In this paper, I was responsible for the whole empirical methods part. 
