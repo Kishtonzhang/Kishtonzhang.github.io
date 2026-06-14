@@ -5,166 +5,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matching Rush Simulation — Toys</title>
 <style>
-:root {
-  --bg: #fafafa; --card-bg: #fff; --text: #333; --text-secondary: #666;
-  --text-tertiary: #999; --border: #e0e0e0; --accent: #2563eb;
-  --success: #16a34a; --warning: #d97706; --danger: #dc2626; --info: #2563eb;
-  --fill-tertiary: #f3f4f6; --radius: 8px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; max-width: 1100px; margin: 0 auto; }
-h1 { font-size: 24px; margin-bottom: 8px; }
-h2 { font-size: 18px; margin-bottom: 8px; font-weight: 600; }
-h3 { font-size: 15px; margin-bottom: 6px; font-weight: 600; }
-.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-.card-header { padding: 8px 14px; font-size: 12px; font-weight: 600; color: var(--text-secondary); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.card-body { padding: 14px; }
-.callout { padding: 12px 14px; border-radius: var(--radius); display: flex; gap: 10px; align-items: flex-start; }
-.callout-info { background: #eff6ff; border: 1px solid #bfdbfe; }
-.callout-warning { background: #fffbeb; border: 1px solid #fde68a; }
-.callout-success { background: #f0fdf4; border: 1px solid #bbf7d0; }
-.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-.pill-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.pill { padding: 3px 10px; border-radius: 14px; font-size: 12px; border: 1px solid var(--border); cursor: pointer; background: var(--card-bg); transition: all 0.15s; user-select: none; }
-.pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.pill:hover:not(.active) { border-color: var(--accent); }
-.pill-badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; display: inline-block; }
-.btn { padding: 6px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--card-bg); font-weight: 500; transition: all 0.15s; }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.btn-primary:hover { opacity: 0.9; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.control-bar { padding: 14px; background: var(--fill-tertiary); border-radius: var(--radius); border: 1px solid var(--border); }
-.control-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
-.control-row:last-child { margin-bottom: 0; }
-.control-label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
-.stat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-.stat-card { text-align: center; padding: 12px 8px; }
-.stat-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-.stat-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-.chart-container { margin-bottom: 6px; }
-.chart-caption { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
-.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 4px; }
-.bar-chart-label { font-size: 10px; color: var(--text-tertiary); text-align: center; margin-top: 4px; white-space: pre-line; }
-.bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
-.bar { width: 100%; max-width: 60px; border-radius: 4px 4px 0 0; position: relative; transition: height 0.4s ease-out; min-width: 20px; }
-.bar-value { font-size: 11px; font-weight: 600; text-align: center; margin-bottom: 4px; }
-.bar-stacked { width: 100%; max-width: 60px; display: flex; flex-direction: column-reverse; border-radius: 4px 4px 0 0; overflow: hidden; transition: height 0.4s; min-width: 20px; }
-.bar-segment { width: 100%; transition: height 0.4s; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.explanation-card { padding: 10px 14px; border-radius: var(--radius); background: var(--fill-tertiary); border: 1px solid var(--border); }
-.explanation-card h4 { font-size: 13px; margin-bottom: 3px; }
-.explanation-card p { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
-.explanation-card li { font-size: 11px; color: var(--text-tertiary); margin-left: 14px; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th, td { padding: 5px 10px; text-align: left; border-bottom: 1px solid var(--border); }
-th { font-weight: 600; color: var(--text-secondary); font-size: 11px; background: var(--fill-tertiary); }
-tr:nth-child(even) { background: var(--fill-tertiary); }
-.row-tone { width: 4px; display: inline-block; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
-.tone-warning { background: var(--warning); }
-.tone-success { background: var(--success); }
-.tone-danger { background: var(--danger); }
-.gap-20 > * + * { margin-top: 20px; }
-.gap-12 > * + * { margin-top: 12px; }
-.gap-6 > * + * { margin-top: 6px; }
-.divider { height: 1px; background: var(--border); margin: 20px 0; }
-.progress-bar { width: 100%; height: 8px; border-radius: 4px; background: var(--fill-tertiary); overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.8s ease-out; }
-.welfare-big { font-size: 28px; font-weight: 700; }
-.fade-in { animation: fadeIn 0.5s ease-out both; }
-.pulse { animation: pulse 1.2s ease-in-out infinite; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-.rush-demo { padding: 12px; border-radius: 6px; background: var(--fill-tertiary); border: 1px solid var(--border); }
-@media (max-width: 768px) { .two-col, .stat-grid { grid-template-columns: 1fr 1fr; } .welfare-big { font-size: 22px; } }
+:root{--bg:#fafafa;--card-bg:#fff;--text:#333;--text-secondary:#666;--text-tertiary:#999;--border:#e0e0e0;--accent:#2563eb;--success:#16a34a;--warning:#d97706;--danger:#dc2626;--info:#2563eb;--fill-tertiary:#f3f4f6;--radius:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px;max-width:1100px;margin:0 auto}
+h1{font-size:24px;margin-bottom:8px}h2{font-size:18px;margin-bottom:8px;font-weight:600}h3{font-size:15px;margin-bottom:6px;font-weight:600}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}
+.card-header{padding:8px 14px;font-size:12px;font-weight:600;color:var(--text-secondary);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.card-body{padding:14px}
+.callout{padding:12px 14px;border-radius:var(--radius);display:flex;gap:10px;align-items:flex-start}
+.callout-info{background:#eff6ff;border:1px solid #bfdbfe}
+.callout-warning{background:#fffbeb;border:1px solid #fde68a}
+.callout-success{background:#f0fdf4;border:1px solid #bbf7d0}
+.pill-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{padding:3px 10px;border-radius:14px;font-size:12px;border:1px solid var(--border);cursor:pointer;background:var(--card-bg);transition:all .15s;user-select:none}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill:hover:not(.active){border-color:var(--accent)}
+.pill-badge{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.btn{padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--card-bg);font-weight:500;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{opacity:.9}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.control-bar{padding:14px;background:var(--fill-tertiary);border-radius:var(--radius);border:1px solid var(--border)}
+.control-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.control-row:last-child{margin-bottom:0}
+.control-label{font-size:13px;color:var(--text-secondary);white-space:nowrap}
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.stat-card{text-align:center;padding:12px 8px}
+.stat-value{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.stat-label{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.explanation-card{padding:10px 14px;border-radius:var(--radius);background:var(--fill-tertiary);border:1px solid var(--border)}
+.explanation-card h4{font-size:13px;margin-bottom:3px}
+.explanation-card p{font-size:12px;color:var(--text-secondary);margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:5px 10px;text-align:left;border-bottom:1px solid var(--border)}
+th{font-weight:600;color:var(--text-secondary);font-size:11px;background:var(--fill-tertiary)}
+tr:nth-child(even){background:var(--fill-tertiary)}
+.row-tone{width:4px;display:inline-block;height:12px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.tone-warning{background:var(--warning)}.tone-success{background:var(--success)}.tone-danger{background:var(--danger)}
+.gap-20>*+*{margin-top:20px}.gap-12>*+*{margin-top:12px}.gap-8>*+*{margin-top:8px}.gap-4>*+*{margin-top:4px}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.progress-bar{width:100%;height:8px;border-radius:4px;background:var(--fill-tertiary);overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .8s ease-out}
+.welfare-big{font-size:28px;font-weight:700}
+.fade-in{animation:fadeIn .5s ease-out both}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.demo-box{padding:12px;border-radius:6px;background:var(--fill-tertiary);border:1px solid var(--border)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:160px;padding-top:4px}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end}
+.bar{width:100%;max-width:60px;border-radius:4px 4px 0 0;transition:height .4s ease-out;min-width:20px}
+.bar-value{font-size:11px;font-weight:600;text-align:center;margin-bottom:4px}
+.bar-label{font-size:10px;color:var(--text-tertiary);text-align:center;margin-top:4px;white-space:pre-line}
+@media(max-width:768px){.two-col,.stat-grid{grid-template-columns:1fr 1fr}.welfare-big{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="gap-20">
 
-<!-- Header -->
 <div class="fade-in">
-  <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px;"><a href="/toys/" style="color:var(--accent);text-decoration:none;">← Toys</a></p>
-  <h1>Matching Rush Simulation</h1>
-  <p style="color:var(--text-secondary);font-size:14px;">Interactive Monte Carlo simulation — 100 candidates × 25 firms. Explore how early offers harm matching efficiency in bilateral markets.</p>
+  <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px"><a href="/toys/" style="color:var(--accent);text-decoration:none">← Toys</a></p>
+  <h1>匹配理论：抢跑对双边市场效率的伤害</h1>
+  <p style="color:var(--text-secondary);font-size:14px">从简单的 5 人 2 公司示例出发，逐步扩展到 100 候选人 × 25 企业的大规模蒙特卡洛模拟。直观展示抢跑行为如何破坏匹配效率，以及信息不对称、风险厌恶和市场集中度如何放大这一效应。</p>
 </div>
 
-<!-- Background -->
 <div class="fade-in" style="animation-delay:0.1s">
   <div class="callout callout-info">
-    <span class="callout-icon">ℹ️</span>
-    <div class="gap-6">
-      <p style="font-size:13px;font-weight:600;">Background: Why does "rushing" exist?</p>
-      <p style="font-size:12px;color:var(--text-secondary);">In real hiring markets, key information (future potential, adaptability, long-term performance) takes time to surface. But firms facing competition can't wait — they make early offers based only on <b>observable quality</b> (resumes, grades), locking in candidates before fully understanding their true value. Meanwhile, risk-averse candidates face a dilemma: accept a sure offer now, or gamble on better ones later?</p>
-      <p style="font-size:12px;color:var(--text-secondary);">This simulation quantifies how much efficiency is lost when all players act rationally in this asymmetric-information game.</p>
+    <span style="font-size:16px;flex-shrink:0">ℹ️</span>
+    <div class="gap-4">
+      <p style="font-size:13px;font-weight:600">背景：抢跑为什么存在？</p>
+      <p style="font-size:12px;color:var(--text-secondary)">真实招聘中，发展潜力、适应能力等关键信息需要时间才能浮现。但企业在激烈竞争中等不起，于是在信息尚未明朗时仅凭简历、成绩等<span style="font-weight:600">可观测质量</span>提前发 offer 锁定候选人。而候选人面对到手 offer，拒绝意味着要在不确定中等待其他公司的回复——越是风险厌恶的人，越倾向于接受眼前的确定性。</p>
+      <p style="font-size:12px;color:var(--text-secondary)">这份模拟正是要量化——当这种提前锁定行为被所有参与者理性采用时，市场的整体匹配效率会损失多少。</p>
     </div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- Warm-up Examples -->
 <div class="fade-in" style="animation-delay:0.15s">
-  <h2>Step 1: Simple Illustrative Examples</h2>
-  <p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px;">
-    Two deterministic examples with 5 candidates and 2 firms. True Value = α × Observable Quality + (1−α) × Future Potential.
-    <b>Total Welfare</b> = sum of true values of matched candidates.
-  </p>
+  <h2>第一步：小规模示例 — 理解抢跑机制</h2>
+  <p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px">以下用 5 位求职者和 2 家公司的简化模型说明计算方法：<span style="font-weight:600">真实价值 = α × 可观测质量 + (1−α) × 未来潜力。</span><span style="font-weight:600">总福利</span>定义为两家公司各自匹配到的候选人真实价值之和。</p>
 </div>
 
 <div id="warmup-cases"></div>
 
 <div class="divider"></div>
 
-<!-- Variable Explanations -->
-<div class="fade-in" style="animation-delay:0.2s">
-  <h2>Step 2: Key Variables</h2>
-</div>
+<div class="fade-in" style="animation-delay:0.2s"><h2>第二步：核心变量解释</h2><p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px">进入大规模模拟前，了解四个控制变量的含义：</p></div>
 <div class="two-col" id="variable-explanations"></div>
 
 <div class="divider"></div>
 
-<!-- Large Simulation -->
-<div class="fade-in" style="animation-delay:0.25s">
-  <h2>Step 3: Large-Scale Simulation</h2>
-  <p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px;">
-    Perfect competition runs Gale-Shapley with full info. Rush: aggressive firms lock candidates by observable quality; the rest use deferred acceptance.
-  </p>
-</div>
+<div class="fade-in" style="animation-delay:0.25s"><h2>第三步：大规模模拟 — 100 候选人 × 25 企业</h2><p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px">完美竞争通过 Gale-Shapley 延迟接受算法按真实价值匹配；抢跑场景中，攻击性超门槛的企业按可观测质量提前锁定，候选人按风险厌恶决定是否接受，剩余名额再通过延迟接受算法分配。</p></div>
 
-<!-- Controls -->
 <div class="fade-in control-bar" style="animation-delay:0.3s" id="controls"></div>
-
 <div class="divider"></div>
-
-<!-- Company Overview -->
 <div class="fade-in" id="company-overview" style="animation-delay:0.35s"></div>
-
 <div class="divider"></div>
-
-<!-- Key Stats -->
 <div class="fade-in stat-grid" id="key-stats" style="animation-delay:0.4s"></div>
 
-<!-- Charts Row 1 -->
 <div class="fade-in two-col" style="animation-delay:0.45s">
-  <div>
-    <h3>Welfare Comparison</h3>
-    <div id="welfare-chart"></div>
-  </div>
-  <div>
-    <h3>Loss Distribution</h3>
-    <div id="loss-dist-chart"></div>
-  </div>
+  <div><div id="welfare-chart"></div></div>
+  <div><h3>效率损失分布</h3><div id="loss-dist-chart"></div><p style="font-size:11px;color:var(--text-tertiary)" id="loss-dist-caption"></p></div>
 </div>
 
-<!-- Charts Row 2 -->
 <div class="fade-in two-col" style="animation-delay:0.5s">
   <div>
-    <h3>Error Distribution by Firm Size</h3>
+    <h3>不同规模企业的错误锁定分布</h3>
     <div id="size-chart"></div>
+    <p style="font-size:11px;color:var(--text-tertiary)">谁在抢跑？——不同集中度下，抢跑者的规模和数量会变化</p>
   </div>
   <div>
-    <h3>Early Offers: Made vs Accepted</h3>
+    <h3>提前 offer 的发放与接受</h3>
     <div id="offer-chart"></div>
+    <p style="font-size:11px;color:var(--text-tertiary);text-align:center" id="offer-rate-caption"></p>
   </div>
 </div>
 
@@ -172,559 +127,290 @@ tr:nth-child(even) { background: var(--fill-tertiary); }
 
 <div class="fade-in" style="animation-delay:0.55s">
   <div class="callout callout-warning">
-    <span class="callout-icon">⚠️</span>
-    <div class="gap-6">
-      <p style="font-size:13px;font-weight:600;">How Rushing Harms Market Efficiency</p>
-      <p style="font-size:12px;color:var(--text-secondary);">1. <b>Information Asymmetry</b>: Rush firms only see observable quality; the unobservable future potential portion is <span id="callout-unobs"></span>.</p>
-      <p style="font-size:12px;color:var(--text-secondary);">2. <b>Risk-Aversion Driven Acceptance</b>: Candidates who lack confidence accept early offers even when their true value ranking is higher.</p>
-      <p style="font-size:12px;color:var(--text-secondary);">3. <b>Cascading Displacement</b>: One wrong lock displaces the optimal candidate from their slot, and the ripple effect propagates through the entire market.</p>
-      <p style="font-size:12px;color:var(--text-secondary);">4. <b>Concentration Shifts Who Rushes</b>: In dispersed markets everyone competes; in concentrated markets, small firms rush while giants stay calm.</p>
+    <span style="font-size:16px;flex-shrink:0">⚠️</span>
+    <div class="gap-4">
+      <p style="font-size:13px;font-weight:600">抢跑如何损害大规模市场效率？</p>
+      <p style="font-size:12px;color:var(--text-secondary)">1. <b>信息不对称</b>：抢跑企业仅凭可观测质量决策，未来潜力占真实价值的 <span id="callout-unobs"></span>，可观测高分者未必真实高价值。</p>
+      <p style="font-size:12px;color:var(--text-secondary)">2. <b>风险厌恶驱动的提前接受</b>：候选人面对不确定性，风险厌恶者倾向于接受眼前 offer，即使这低于其真实价值排序。</p>
+      <p style="font-size:12px;color:var(--text-secondary)">3. <b>连锁排斥效应</b>：错误锁定后，本该匹配到高价值候选人的岗位被次优人选占据，被错锁者错过更适合自己的机会。</p>
+      <p style="font-size:12px;color:var(--text-secondary)">4. <b>集中度改变抢跑格局</b>：低集中度人人抢（竞争激烈），高集中度巨头从容、小企业为求生存集体抢跑。</p>
     </div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- Detail Table -->
-<div class="fade-in" style="animation-delay:0.6s">
-  <h2>Last 10 Simulation Rounds</h2>
-  <div id="detail-table"></div>
+<div class="fade-in" style="animation-delay:0.6s"><h2>敏感度分析</h2><p style="color:var(--text-secondary);font-size:12px;margin-bottom:8px">α 越小，未来潜力越重要，仅凭可观测质量抢跑的伤害越大。点击按钮运行 7 组 α × 30 次批量模拟（需几秒）。</p>
+  <button class="btn btn-primary" id="senBtn" onclick="runSensitivity()">运行敏感度分析</button>
+  <span style="font-size:12px;color:var(--text-secondary);margin-left:10px;display:none" id="senStatus"></span>
+  <div id="senResult" style="margin-top:12px"></div>
 </div>
 
 <div class="divider"></div>
 
-<p style="font-size:11px;color:var(--text-tertiary);text-align:center;">
-  Bilateral Matching Simulation · 100 candidates × 25 firms · Gale-Shapley · Monte Carlo · <span id="footer-params"></span>
-</p>
+<div class="fade-in" style="animation-delay:0.65s"><h2>最近 10 轮模拟详表</h2><div id="detail-table"></div></div>
+
+<div class="divider"></div>
+
+<p style="font-size:11px;color:var(--text-tertiary);text-align:center">双边匹配模拟 · 100候选人 × 25企业 · Gale-Shapley · 蒙特卡洛 · <span id="footer-params"></span></p>
 
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// Simulation Engine
-// ═══════════════════════════════════════════════════════
+// ═══ 模拟引擎 ═══
+function gaussianRandom(m=0,s=1){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return m+s*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function clamp(v,l,h){return Math.max(l,Math.min(h,v))}
 
-function gaussianRandom(mu = 0, sigma = 1) {
-  let u = 0, v = 0;
-  while (u === 0) u = Math.random();
-  while (v === 0) v = Math.random();
-  return mu + sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+function generateCompanies(c){
+  const a=[];
+  if(c<.33){for(let i=1;i<=25;i++)a.push({id:i,capacity:Math.round(2+Math.random()*3),aggressiveness:clamp(gaussianRandom(.65,.18),.2,.9),sizeLabel:'中型'})}
+  else if(c<.66){
+    for(let i=1;i<=5;i++)a.push({id:i,capacity:Math.round(4+Math.random()*4),aggressiveness:clamp(gaussianRandom(.4,.18),.1,.7),sizeLabel:'大型'});
+    for(let i=6;i<=15;i++)a.push({id:i,capacity:Math.round(2+Math.random()*2),aggressiveness:clamp(gaussianRandom(.55,.2),.15,.85),sizeLabel:'中型'});
+    for(let i=16;i<=25;i++)a.push({id:i,capacity:Math.round(1+Math.random()*2),aggressiveness:clamp(gaussianRandom(.65,.18),.25,.9),sizeLabel:'小型'});
+  }else{
+    for(let i=1;i<=3;i++)a.push({id:i,capacity:Math.round(7+Math.random()*6),aggressiveness:clamp(gaussianRandom(.2,.12),.05,.45),sizeLabel:'大型'});
+    for(let i=4;i<=9;i++)a.push({id:i,capacity:Math.round(2+Math.random()*3),aggressiveness:clamp(gaussianRandom(.5,.2),.15,.8),sizeLabel:'中型'});
+    for(let i=10;i<=25;i++)a.push({id:i,capacity:Math.round(1+Math.random()*1),aggressiveness:clamp(gaussianRandom(.75,.15),.4,.95),sizeLabel:'小型'});
+  }
+  return a;
 }
 
-function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-
-function generateCompanies(concentration) {
-  const companies = [];
-  if (concentration < 0.33) {
-    for (let i = 1; i <= 25; i++) {
-      companies.push({ id: i, capacity: Math.round(2 + Math.random() * 3),
-        aggressiveness: clamp(gaussianRandom(0.65, 0.18), 0.2, 0.9), sizeLabel: '中型' });
-    }
-  } else if (concentration < 0.66) {
-    for (let i = 1; i <= 5; i++) companies.push({ id: i, capacity: Math.round(4 + Math.random() * 4), aggressiveness: clamp(gaussianRandom(0.4, 0.18), 0.1, 0.7), sizeLabel: '大型' });
-    for (let i = 6; i <= 15; i++) companies.push({ id: i, capacity: Math.round(2 + Math.random() * 2), aggressiveness: clamp(gaussianRandom(0.55, 0.2), 0.15, 0.85), sizeLabel: '中型' });
-    for (let i = 16; i <= 25; i++) companies.push({ id: i, capacity: Math.round(1 + Math.random() * 2), aggressiveness: clamp(gaussianRandom(0.65, 0.18), 0.25, 0.9), sizeLabel: '小型' });
-  } else {
-    for (let i = 1; i <= 3; i++) companies.push({ id: i, capacity: Math.round(7 + Math.random() * 6), aggressiveness: clamp(gaussianRandom(0.2, 0.12), 0.05, 0.45), sizeLabel: '大型' });
-    for (let i = 4; i <= 9; i++) companies.push({ id: i, capacity: Math.round(2 + Math.random() * 3), aggressiveness: clamp(gaussianRandom(0.5, 0.2), 0.15, 0.8), sizeLabel: '中型' });
-    for (let i = 10; i <= 25; i++) companies.push({ id: i, capacity: Math.round(1 + Math.random() * 1), aggressiveness: clamp(gaussianRandom(0.75, 0.15), 0.4, 0.95), sizeLabel: '小型' });
-  }
-  return companies;
+function genCands(n,alpha){
+  const a=[];
+  for(let i=1;i<=n;i++){const oq=clamp(Math.round(gaussianRandom(75,15)),40,100);const fp=clamp(Math.round(gaussianRandom(70,16)),35,100);a.push({id:i,observableQuality:oq,futurePotential:fp,riskAversion:clamp(gaussianRandom(.5,.25),.05,.95),trueValue:Math.round(alpha*oq+(1-alpha)*fp)})}
+  return a;
 }
 
-function generateCandidates(count, alpha) {
-  const arr = [];
-  for (let i = 1; i <= count; i++) {
-    const oq = clamp(Math.round(gaussianRandom(75, 15)), 40, 100);
-    const fp = clamp(Math.round(gaussianRandom(70, 16)), 35, 100);
-    arr.push({ id: i, observableQuality: oq, futurePotential: fp,
-      riskAversion: clamp(gaussianRandom(0.5, 0.25), 0.05, 0.95),
-      trueValue: Math.round(alpha * oq + (1 - alpha) * fp) });
-  }
-  return arr;
+function deferredAcceptance(candidates,companies,valueFn){
+  const p=companies.map(c=>({companyId:c.id,capacity:c.capacity,prefList:[...candidates].sort((a,b)=>valueFn(b)-valueFn(a)).map(x=>x.id),nextProposal:0,matched:[]}));
+  const cm=new Map();let pg=true;
+  while(pg){pg=false;for(const cp of p){while(cp.matched.length<cp.capacity&&cp.nextProposal<cp.prefList.length){pg=true;const cid=cp.prefList[cp.nextProposal++];const v=valueFn(candidates.find(x=>x.id===cid));const cur=cm.get(cid);if(!cur||v>cur.value){if(cur)p.find(x=>x.companyId===cur.companyId).matched=p.find(x=>x.companyId===cur.companyId).matched.filter(id=>id!==cid);cp.matched.push(cid);cm.set(cid,{companyId:cp.companyId,value:v})}}}}
+  const m=[];let w=0;for(const cp of p)for(const cid of cp.matched){m.push({candidateId:cid,companyId:cp.companyId});w+=candidates.find(c=>c.id===cid).trueValue}return{matches:m,welfare:w};
 }
 
-function deferredAcceptance(candidates, companies, valueFn) {
-  const prefs = companies.map(c => ({
-    companyId: c.id, capacity: c.capacity,
-    prefList: [...candidates].sort((a, b) => valueFn(b) - valueFn(a)).map(x => x.id),
-    nextProposal: 0, matched: []
-  }));
-  const candMatch = new Map();
-  let progress = true;
-  while (progress) {
-    progress = false;
-    for (const p of prefs) {
-      while (p.matched.length < p.capacity && p.nextProposal < p.prefList.length) {
-        progress = true;
-        const cid = p.prefList[p.nextProposal++];
-        const val = valueFn(candidates.find(c => c.id === cid));
-        const cur = candMatch.get(cid);
-        if (!cur || val > cur.value) {
-          if (cur) prefs.find(x => x.companyId === cur.companyId).matched = prefs.find(x => x.companyId === cur.companyId).matched.filter(id => id !== cid);
-          p.matched.push(cid);
-          candMatch.set(cid, { companyId: p.companyId, value: val });
-        }
-      }
-    }
-  }
-  const matches = []; let welfare = 0;
-  for (const p of prefs) for (const cid of p.matched) { matches.push({ candidateId: cid, companyId: p.companyId }); welfare += candidates.find(c => c.id === cid).trueValue; }
-  return { matches, welfare };
+function simRun(round,alpha,conc,th){
+  const cands=genCands(100,alpha);const comps=generateCompanies(conc);
+  const dao=deferredAcceptance(cands,comps,c=>c.trueValue);
+  const early=comps.filter(c=>c.aggressiveness>th);const late=comps.filter(c=>c.aggressiveness<=th);
+  const cbo=[...cands].sort((a,b)=>b.observableQuality-a.observableQuality);
+  const lk=new Set();const lkm=[];let om=0,oa=0;
+  for(const cp of early){let f=0;for(const cd of cbo){if(f>=cp.capacity)break;if(lk.has(cd.id))continue;om++;if(Math.random()<clamp(cd.riskAversion*(1.3-cd.observableQuality/100),0,1)){oa++;lk.add(cd.id);lkm.push({candidateId:cd.id,companyId:cp.id});f++}}}
+  const remC=cands.filter(c=>!lk.has(c.id));const remCo=[...late.map(c=>({...c}))];
+  for(const cp of early){const f=lkm.filter(m=>m.companyId===cp.id).length;if(cp.capacity-f>0)remCo.push({...cp,capacity:cp.capacity-f})}
+  let rw=lkm.reduce((s,m)=>s+cands.find(c=>c.id===m.candidateId).trueValue,0);
+  if(remC.length>0&&remCo.length>0)rw+=deferredAcceptance(remC,remCo,c=>c.trueValue).welfare;
+  const oids=new Set(dao.matches.map(m=>m.candidateId));let disp=0;
+  for(const m of lkm)if(!oids.has(m.candidateId))disp++;
+  const loss=dao.welfare-rw;
+  return{round,candidates:cands,companies:comps,optimalWelfare:dao.welfare,optimalMatches:dao.matches,rushWelfare:rw,rushMatches:lkm,welfareLoss:loss,lossPercent:dao.welfare>0?(loss/dao.welfare)*100:0,earlyOffersMade:om,earlyOffersAccepted:oa,candidatesDisplaced:disp};
 }
 
-function simulateSingleRun(round, alpha, concentration, earlyThreshold) {
-  const candidates = generateCandidates(100, alpha);
-  const companies = generateCompanies(concentration);
-  const daOpt = deferredAcceptance(candidates, companies, c => c.trueValue);
-  const earlyComps = companies.filter(c => c.aggressiveness > earlyThreshold);
-  const lateComps = companies.filter(c => c.aggressiveness <= earlyThreshold);
-  const candByObs = [...candidates].sort((a, b) => b.observableQuality - a.observableQuality);
-  const locked = new Set();
-  const lockedMatches = [];
-  let offersMade = 0, offersAccepted = 0;
+function runSims(n,alpha,conc,th){const r=[];for(let i=0;i<n;i++)r.push(simRun(i+1,alpha,conc,th));return{results:r,summary:{avgOptimalWelfare:Math.round(r.reduce((s,x)=>s+x.optimalWelfare,0)/n),avgRushWelfare:Math.round(r.reduce((s,x)=>s+x.rushWelfare,0)/n),avgLossPercent:Math.round(r.reduce((s,x)=>s+x.lossPercent,0)/n*10)/10,avgOffersMade:Math.round(r.reduce((s,x)=>s+x.earlyOffersMade,0)/n),avgAccepted:Math.round(r.reduce((s,x)=>s+x.earlyOffersAccepted,0)/n),avgDisplaced:Math.round(r.reduce((s,x)=>s+x.candidatesDisplaced,0)/n),totalSlots:r[0]?.companies.reduce((s,c)=>s+c.capacity,0)??0,totalRuns:n}}}
 
-  for (const comp of earlyComps) {
-    let filled = 0;
-    for (const cand of candByObs) {
-      if (filled >= comp.capacity) break;
-      if (locked.has(cand.id)) continue;
-      offersMade++;
-      if (Math.random() < clamp(cand.riskAversion * (1.3 - cand.observableQuality / 100), 0, 1)) {
-        offersAccepted++; locked.add(cand.id);
-        lockedMatches.push({ candidateId: cand.id, companyId: comp.id }); filled++;
-      }
-    }
-  }
-
-  const remainingCands = candidates.filter(c => !locked.has(c.id));
-  const remainingComps = [...lateComps.map(c => ({ ...c }))];
-  for (const comp of earlyComps) {
-    const filled = lockedMatches.filter(m => m.companyId === comp.id).length;
-    if (comp.capacity - filled > 0) remainingComps.push({ ...comp, capacity: comp.capacity - filled });
-  }
-
-  let rushWelfare = lockedMatches.reduce((s, m) => s + candidates.find(c => c.id === m.candidateId).trueValue, 0);
-  if (remainingCands.length > 0 && remainingComps.length > 0) {
-    rushWelfare += deferredAcceptance(remainingCands, remainingComps, c => c.trueValue).welfare;
-  }
-
-  const optIds = new Set(daOpt.matches.map(m => m.candidateId));
-  let displaced = 0;
-  for (const m of lockedMatches) if (!optIds.has(m.candidateId)) displaced++;
-
-  const loss = daOpt.welfare - rushWelfare;
-  return { round, candidates, companies, optimalWelfare: daOpt.welfare, optimalMatches: daOpt.matches,
-    rushWelfare, rushMatches: lockedMatches, welfareLoss: loss,
-    lossPercent: daOpt.welfare > 0 ? (loss / daOpt.welfare) * 100 : 0,
-    earlyOffersMade: offersMade, earlyOffersAccepted: offersAccepted, candidatesDisplaced: displaced };
-}
-
-function runSimulations(numRuns, alpha, concentration, earlyThreshold) {
-  const results = [];
-  for (let i = 0; i < numRuns; i++) results.push(simulateSingleRun(i + 1, alpha, concentration, earlyThreshold));
-  const n = numRuns;
-  return { results, summary: {
-    avgOptimalWelfare: Math.round(results.reduce((s, r) => s + r.optimalWelfare, 0) / n),
-    avgRushWelfare: Math.round(results.reduce((s, r) => s + r.rushWelfare, 0) / n),
-    avgLossPercent: Math.round(results.reduce((s, r) => s + r.lossPercent, 0) / n * 10) / 10,
-    avgOffersMade: Math.round(results.reduce((s, r) => s + r.earlyOffersMade, 0) / n),
-    avgAccepted: Math.round(results.reduce((s, r) => s + r.earlyOffersAccepted, 0) / n),
-    avgDisplaced: Math.round(results.reduce((s, r) => s + r.candidatesDisplaced, 0) / n),
-    totalSlots: results[0]?.companies.reduce((s, c) => s + c.capacity, 0) ?? 0, totalRuns: n } };
-}
-
-// ═══════════════════════════════════════════════════════
-// UI State
-// ═══════════════════════════════════════════════════════
-
-let alpha = 0.70, concentration = 0.50, earlyThreshold = 0.40, numRuns = 50;
-
-function getCompanies() { return generateCompanies(concentration); }
-
-function buildCaseCands(alphaVal) {
-  return [
-    [
-      { id:1, observableQuality:92, futurePotential:88, riskAversion:0.5, trueValue:Math.round(alphaVal*92+(1-alphaVal)*88) },
-      { id:2, observableQuality:86, futurePotential:90, riskAversion:0.5, trueValue:Math.round(alphaVal*86+(1-alphaVal)*90) },
-      { id:3, observableQuality:74, futurePotential:72, riskAversion:0.5, trueValue:Math.round(alphaVal*74+(1-alphaVal)*72) },
-      { id:4, observableQuality:68, futurePotential:70, riskAversion:0.5, trueValue:Math.round(alphaVal*68+(1-alphaVal)*70) },
-      { id:5, observableQuality:62, futurePotential:65, riskAversion:0.5, trueValue:Math.round(alphaVal*62+(1-alphaVal)*65) },
-    ],
-    [
-      { id:1, observableQuality:93, futurePotential:58, riskAversion:0.5, trueValue:Math.round(alphaVal*93+(1-alphaVal)*58) },
-      { id:2, observableQuality:85, futurePotential:92, riskAversion:0.5, trueValue:Math.round(alphaVal*85+(1-alphaVal)*92) },
-      { id:3, observableQuality:78, futurePotential:85, riskAversion:0.5, trueValue:Math.round(alphaVal*78+(1-alphaVal)*85) },
-      { id:4, observableQuality:69, futurePotential:70, riskAversion:0.5, trueValue:Math.round(alphaVal*69+(1-alphaVal)*70) },
-      { id:5, observableQuality:61, futurePotential:66, riskAversion:0.5, trueValue:Math.round(alphaVal*61+(1-alphaVal)*66) },
-    ]
+// ═══ 演示案例数据 ═══
+function buildCases(a){
+  return[
+    // Case A: 无损失 — 可观测排名≈真实排名
+    [{id:1,observableQuality:92,futurePotential:88,riskAversion:.5,trueValue:Math.round(a*92+(1-a)*88)},
+     {id:2,observableQuality:86,futurePotential:90,riskAversion:.5,trueValue:Math.round(a*86+(1-a)*90)},
+     {id:3,observableQuality:74,futurePotential:72,riskAversion:.5,trueValue:Math.round(a*74+(1-a)*72)},
+     {id:4,observableQuality:68,futurePotential:70,riskAversion:.5,trueValue:Math.round(a*68+(1-a)*70)},
+     {id:5,observableQuality:62,futurePotential:65,riskAversion:.5,trueValue:Math.round(a*62+(1-a)*65)}],
+    // Case B: 有损失 — 可观测最高但真实价值排第三，干脆把潜力压到极低确保跨α成立
+    [{id:1,observableQuality:96,futurePotential:28,riskAversion:.5,trueValue:Math.round(a*96+(1-a)*28)},
+     {id:2,observableQuality:84,futurePotential:97,riskAversion:.5,trueValue:Math.round(a*84+(1-a)*97)},
+     {id:3,observableQuality:80,futurePotential:94,riskAversion:.5,trueValue:Math.round(a*80+(1-a)*94)},
+     {id:4,observableQuality:69,futurePotential:67,riskAversion:.5,trueValue:Math.round(a*69+(1-a)*67)},
+     {id:5,observableQuality:60,futurePotential:63,riskAversion:.5,trueValue:Math.round(a*60+(1-a)*63)}]
   ];
 }
 
-function buildWarmupCase(cands, alphaVal, caseLabel, tone) {
-  const sortedByTrue = [...cands].sort((a,b) => b.trueValue - a.trueValue);
-  const top2 = [sortedByTrue[0], sortedByTrue[1]];
-  const optWelfare = top2[0].trueValue + top2[1].trueValue;
-  const sortedByObs = [...cands].sort((a,b) => b.observableQuality - a.observableQuality);
-  const target = sortedByObs[0];
-  const isInOpt = top2.some(c => c.id === target.id);
-  const remaining = cands.filter(c => c.id !== target.id).sort((a,b) => b.trueValue - a.trueValue);
-  const bMatch = remaining[0];
-  const rushWelfare = target.trueValue + bMatch.trueValue;
-  const loss = optWelfare - rushWelfare;
-  const isHarm = loss > 0;
-  const toneClass = isHarm ? 'callout-warning' : 'callout-success';
-  const toneColor = isHarm ? 'var(--warning)' : 'var(--success)';
-
-  const rows = cands.map(c => {
-    const obsRank = cands.filter(x => x.observableQuality > c.observableQuality).length + 1;
-    const trueRank = cands.filter(x => x.trueValue > c.trueValue).length + 1;
-    const isTarget = c.id === target.id;
-    const isOpt = top2.some(o => o.id === c.id);
-    const marker = isTarget ? '<span class="row-tone tone-warning"></span>' : isOpt ? '<span class="row-tone tone-success"></span>' : '<span class="row-tone"></span>';
-    return `<tr>
-      <td>${marker}${c.id}</td>
-      <td style="text-align:right">${c.observableQuality}</td>
-      <td style="text-align:right">${c.futurePotential}</td>
-      <td style="text-align:right">${c.trueValue}</td>
-      <td>#${obsRank}${isTarget ? ' ← Rush target' : ''}</td>
-      <td>#${trueRank}${isOpt ? ' ← Optimal' : ''}</td>
-    </tr>`;
+function buildCaseHTML(cands,alphaVal,label,badge,isHarm){
+  const st=[...cands].sort((a,b)=>b.trueValue-a.trueValue);
+  const top2=[st[0],st[1]];const oW=top2[0].trueValue+top2[1].trueValue;
+  const so=[...cands].sort((a,b)=>b.observableQuality-a.observableQuality);
+  const tgt=so[0];const inOpt=top2.some(c=>c.id===tgt.id);
+  const rem=cands.filter(c=>c.id!==tgt.id).sort((a,b)=>b.trueValue-a.trueValue);
+  const bm=rem[0];const rW=tgt.trueValue+bm.trueValue;
+  const loss=oW-rW;const lossHas=loss>0;
+  const tc=lossHas?'callout-warning':'callout-success';
+  const tc2=lossHas?'var(--warning)':'var(--success)';
+  const rows=cands.map(c=>{
+    const or=cands.filter(x=>x.observableQuality>c.observableQuality).length+1;
+    const tr=cands.filter(x=>x.trueValue>c.trueValue).length+1;
+    const isT=c.id===tgt.id;const isO=top2.some(o=>o.id===c.id);
+    const mk=isT?'tone-warning':isO?'tone-success':'';
+    return `<tr><td><span class="row-tone ${mk}"></span>${c.id}</td><td style="text-align:right">${c.observableQuality}</td><td style="text-align:right">${c.futurePotential}</td><td style="text-align:right">${c.trueValue}</td><td>#${or}${isT?' ← 抢跑目标':''}</td><td>#${tr}${isO?' ← 最优匹配':''}</td></tr>`;
   }).join('');
-
-  return `<div class="card" style="margin-bottom:14px">
-    <div class="card-header">
-      ${caseLabel}
-      <span class="pill-badge" style="background:${toneColor}15;color:${toneColor}">${isHarm ? 'Has Loss' : 'No Loss'}</span>
-    </div>
-    <div class="card-body">
-      <p style="font-size:12px;font-weight:600;margin-bottom:8px;">Candidate Data</p>
-      <table style="margin-bottom:10px">
-        <tr><th>ID</th><th style="text-align:right">Observable</th><th style="text-align:right">Potential</th><th style="text-align:right">True Value</th><th>Obs Rank</th><th>True Rank</th></tr>
-        ${rows}
-      </table>
-      <p style="font-size:12px;font-weight:600;margin-bottom:4px;">Calculation</p>
-      <div class="rush-demo">
-        <p style="font-size:12px"><b>True Value</b> = α × Observable + (1−α) × Potential (α = ${alphaVal.toFixed(1)})</p>
-        <p style="font-size:12px;margin-top:4px"><b>Perfect Competition:</b> Match top 2 by true value → Firm A hires #${top2[0].id} (${top2[0].trueValue}), Firm B hires #${top2[1].id} (${top2[1].trueValue}) → Welfare = ${optWelfare}</p>
-        <p style="font-size:12px;margin-top:4px"><b>Rush:</b> Firm A locks #${target.id} by observable (obs=${target.observableQuality}, true=${target.trueValue}), Firm B gets #${bMatch.id} (${bMatch.trueValue}) → Welfare = ${rushWelfare}</p>
-        <p style="font-size:12px;margin-top:4px"><b>Loss:</b> ${optWelfare} − ${rushWelfare} = ${loss} (${optWelfare > 0 ? (loss / optWelfare * 100).toFixed(1) : '0.0'}%)</p>
+  return `<div class="card">
+    <div class="card-header">${label}<span class="pill-badge" style="background:${tc2}15;color:${tc2}">${badge}</span></div>
+    <div class="card-body gap-12">
+      <p style="font-size:12px;font-weight:600">候选人数据</p>
+      <table><tr><th>ID</th><th style="text-align:right">可观测质量</th><th style="text-align:right">未来潜力</th><th style="text-align:right">真实价值</th><th>可观测排名</th><th>真实排名</th></tr>${rows}</table>
+      <div class="divider" style="margin:14px 0"></div>
+      <p style="font-size:12px;font-weight:600">计算过程</p>
+      <div class="demo-box gap-4">
+        <p style="font-size:12px"><b>真实价值</b> = α × 可观测质量 + (1−α) × 未来潜力 (α = ${alphaVal.toFixed(1)})</p>
+        <p style="font-size:12px"><b>完美竞争：</b>按真实价值从高到低匹配前 2 名 → 公司A录用 #${top2[0].id}(价值${top2[0].trueValue})，公司B录用 #${top2[1].id}(价值${top2[1].trueValue}) → <b>总福利 = ${oW}</b></p>
+        <p style="font-size:12px"><b>抢跑场景：</b>公司A仅按可观测质量提前锁定 #${tgt.id}(可观测${tgt.observableQuality}，真实价值${tgt.trueValue})，公司B在剩余候选人中按真实价值选最优 #${bm.id}(真实价值${bm.trueValue}) → <b>总福利 = ${rW}</b></p>
+        <p style="font-size:12px"><b>效率损失：</b>${oW} − ${rW} = ${loss} (${oW>0?(loss/oW*100).toFixed(1):'0.0'}%)</p>
       </div>
-      <div class="callout ${toneClass}" style="margin-top:10px">
-        <span class="callout-icon">${isHarm ? '⚠️' : '✅'}</span>
-        <p style="font-size:12px"><b>${isHarm ? 'Rush caused efficiency loss' : 'Rush did NOT cause efficiency loss'}:</b> ${isHarm
-          ? `#${target.id} ranks #1 by observable quality but only #${cands.filter(c=>c.trueValue>target.trueValue).length+1} by true value. Firm A was fooled by surface scores, displacing a truly higher-value candidate.`
-          : `#${target.id} happens to be in the optimal top-2 by true value as well. Rush didn't damage welfare this time — but this coincidence is unreliable in large markets.`}</p>
-      </div>
-    </div>
-  </div>`;
+      <div class="callout ${tc}"><span style="font-size:16px;flex-shrink:0">${lossHas?'⚠️':'✅'}</span><p style="font-size:12px"><b>${lossHas?'抢跑造成了效率损失':'抢跑未造成效率损失'}</b>：${lossHas
+        ?`#${tgt.id} 的可观测质量排名第 1，但真实价值仅排第 ${cands.filter(c=>c.trueValue>tgt.trueValue).length+1}。公司A被表面分数欺骗，锁定了非最优人选，挤占了本应属于 #${cands.filter(c=>c.trueValue>tgt.trueValue).sort((a,b)=>b.trueValue-a.trueValue)[0].id} 的位置。`
+        :`#${tgt.id} 的可观测质量与真实价值排名一致（均列前 2 名）。抢跑恰好没造成损失——但这种"巧合"在大规模信息不对称的市场中并不可靠。`}</p></div>
+    </div></div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-// Render Bar Chart (SVG)
-// ═══════════════════════════════════════════════════════
-
-function renderBarChart(containerId, categories, series, height = 160, stacked = false) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const maxVal = Math.max(...series.flatMap(s => s.data), 1);
-
-  let html = `<div class="bar-chart" style="height:${height}px">`;
-  for (let i = 0; i < categories.length; i++) {
-    const cat = categories[i];
-    html += `<div class="bar-col">
-      <div style="display:flex;flex-direction:column-reverse;align-items:center;width:100%;height:100%">`;
-    if (stacked) {
-      // stacked: render segments
-      const total = series.reduce((s, sr) => s + sr.data[i], 0);
-      const pct = maxVal > 0 ? (total / maxVal * 100) : 0;
-      html += `<div class="bar-stacked" style="height:${pct}%">`;
-      let cum = 0;
-      for (const sr of series) {
-        const h = total > 0 ? (sr.data[i] / total * 100) : 0;
-        html += `<div class="bar-segment" style="height:${h}%;background:${colorForSeries(sr)}"></div>`;
-      }
-      html += `</div>`;
-      html += `<div class="bar-value">${total}</div>`;
-    } else {
-      for (let j = 0; j < series.length; j++) {
-        const sr = series[j];
-        const pct = maxVal > 0 ? (sr.data[i] / maxVal * 100) : 0;
-        html += `<div class="bar" style="height:${pct}%;background:${colorForSeries(sr)};max-width:40px"></div>`;
-      }
-      for (const sr of series) {
-        html += `<div class="bar-value">${sr.data[i]}</div>`;
-      }
-    }
-    html += `</div><div class="bar-chart-label">${cat.replace(/\\n/g,'<br>')}</div></div>`;
+// ═══ 柱状图 ═══
+function renderBarChart(id,cats,series,ht=160){
+  const el=document.getElementById(id);if(!el)return;
+  const mx=Math.max(...series.flatMap(s=>s.data),1);
+  let h=`<div class="bar-chart" style="height:${ht}px">`;
+  for(let i=0;i<cats.length;i++){
+    h+=`<div class="bar-col"><div style="display:flex;flex-direction:column-reverse;align-items:center;width:100%;height:100%">`;
+    for(const sr of series){const pct=mx>0?(sr.data[i]/mx*100):0;h+=`<div class="bar" style="height:${pct}%;background:${barColor(sr)};max-width:40px"></div>`}
+    for(const sr of series)h+=`<div class="bar-value">${sr.data[i]}</div>`;
+    h+=`</div><div class="bar-label">${cats[i].replace(/\\n/g,'<br>')}</div></div>`;
   }
-  html += `</div>`;
-
-  // Legend
-  html += `<div style="display:flex;gap:14px;justify-content:center;margin-top:6px;font-size:11px">`;
-  for (const sr of series) {
-    html += `<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorForSeries(sr)};vertical-align:middle;margin-right:4px"></span>${sr.name}</span>`;
-  }
-  html += `</div>`;
-
-  container.innerHTML = html;
+  h+=`</div><div style="display:flex;gap:14px;justify-content:center;margin-top:6px;font-size:11px">`;
+  for(const sr of series)h+=`<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${barColor(sr)};vertical-align:middle;margin-right:4px"></span>${sr.name}</span>`;
+  h+=`</div>`;el.innerHTML=h;
 }
 
-function colorForSeries(sr) {
-  if (sr.tone === 'success' || sr.tone === 'success') return 'var(--success)';
-  if (sr.tone === 'warning') return 'var(--warning)';
-  if (sr.tone === 'danger') return 'var(--danger)';
-  if (sr.tone === 'info') return 'var(--info)';
-  if (sr.name.includes('完美') || sr.name.includes('Accept')) return 'var(--success)';
-  if (sr.name.includes('抢跑') || sr.name.includes('Made')) return 'var(--warning)';
-  if (sr.name.includes('接受') || sr.name.includes('Accepted') || sr.name.includes('Rush')) return 'var(--warning)';
-  return 'var(--accent)';
-}
+function barColor(sr){if(sr.tone==='success')return'var(--success)';if(sr.tone==='warning')return'var(--warning)';if(sr.tone==='danger')return'var(--danger)';if(sr.tone==='info')return'var(--info)';if(sr.name.includes('完美')||sr.name.includes('Correct'))return'var(--success)';if(sr.name.includes('抢跑')||sr.name.includes('Rush')||sr.name.includes('被接受')||sr.name.includes('Wrong'))return'var(--warning)';return'var(--accent)'}
 
-// ═══════════════════════════════════════════════════════
-// Animated Counter
-// ═══════════════════════════════════════════════════════
-
-const animTargets = {};
-
-function animateValue(id, target, duration = 800, decimal = 0) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const start = parseFloat(el.textContent) || 0;
-  if (Math.abs(start - target) < 0.1) { el.textContent = formatNum(target, decimal); return; }
-  const startTime = performance.now();
-
-  function step(ts) {
-    const elapsed = ts - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    el.textContent = formatNum(start + (target - start) * eased, decimal);
-    if (progress < 1) requestAnimationFrame(step);
-  }
+// ═══ 动画 ═══
+function animValue(id,tgt,dur=800,dec=0){
+  const el=document.getElementById(id);if(!el)return;
+  const st=parseFloat(el.textContent)||0;if(Math.abs(st-tgt)<.1){el.textContent=fmt(tgt,dec);return}
+  const t0=performance.now();
+  function step(ts){const p=Math.min((ts-t0)/dur,1);const e=1-Math.pow(1-p,3);el.textContent=fmt(st+(tgt-st)*e,dec);if(p<1)requestAnimationFrame(step)}
   requestAnimationFrame(step);
 }
+function fmt(v,d){return d>0?(Math.round(v*Math.pow(10,d))/Math.pow(10,d)).toFixed(d):Math.round(v)}
 
-function formatNum(v, d) {
-  return d > 0 ? (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d) : Math.round(v);
-}
+// ═══ 主渲染 ═══
+let alpha=.7,conc=.5,th=.4,runs=50;
 
-// ═══════════════════════════════════════════════════════
-// Main Render
-// ═══════════════════════════════════════════════════════
+function renderAll(){
+  const{results,summary}=runSims(runs,alpha,conc,th);
 
-function renderAll() {
-  const { results, summary } = runSimulations(numRuns, alpha, concentration, earlyThreshold);
+  // 预热案例
+  const[A,B]=buildCases(alpha);
+  document.getElementById('warmup-cases').innerHTML=
+    buildCaseHTML(A,alpha,'案例 A：抢跑未造成效率损失','无损失',false)+
+    `<p style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">案例 A 中，可观测排名与真实排名高度一致。抢跑只是交换了两家公司的匹配人选，总福利不变。α 较高时这种"巧合"更常见，但 α 越低越容易出现案例 B 的情况。</p>`+
+    buildCaseHTML(B,alpha,'案例 B：抢跑造成效率损失','有损失',true)+
+    `<p style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">案例 B 揭示了抢跑的核心风险：#1 可观测质量最高（96 分），但未来潜力极低（28 分），真实价值无法进入前两名。公司A看到高分就抢，忽略了隐藏在未来潜力中的信息——这正是"信息不对称下的错误锁定"。</p>`;
 
-  // ── Warmup cases ──
-  const [caseA, caseB] = buildCaseCands(alpha);
-  document.getElementById('warmup-cases').innerHTML =
-    buildWarmupCase(caseA, alpha, 'Case A: Rush without efficiency loss', 'success') +
-    `<p style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">In Case A, observable rankings match true-value rankings. Rush swaps the firms but doesn't change welfare. When α is high, this coincidence is more common.</p>` +
-    buildWarmupCase(caseB, alpha, 'Case B: Rush causes efficiency loss', 'warning') +
-    `<p style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">Case B reveals the core risk: #1 has top observable score (93) but poor potential (58). The firm sees only the surface, locking a candidate who shouldn't be in the top 2.</p>`;
+  // 变量说明
+  document.getElementById('variable-explanations').innerHTML=`
+    <div class="explanation-card"><h4>α (alpha) — 可观测质量权重</h4><p>真实价值中"当前可见"和"将来才知道"各占多大比重。</p><ul style="font-size:11px;color:var(--text-tertiary);padding-left:16px"><li>α = 0.9：真相几乎一目了然，抢跑风险低</li><li>α = 0.5：可观测与潜力各半，看走眼概率显著上升</li><li>预期：α 越小，抢跑效率损失越大</li></ul></div>
+    <div class="explanation-card"><h4>市场集中度 — 名额分布</h4><p>总名额在大、中、小企业间的分配方式，影响谁来抢跑。</p><ul style="font-size:11px;color:var(--text-tertiary);padding-left:16px"><li>低：25 家企业规模接近，激烈竞争，普遍抢跑</li><li>中：大企业从容（名额多）、小企业焦虑抢跑</li><li>高：巨头稳坐钓鱼台（不抢），16 家小企业疯狂抢跑求生存</li><li>预期：集中度改变"谁来抢跑"，而非简单的越多越坏</li></ul></div>
+    <div class="explanation-card"><h4>抢跑门槛 — 攻击性阈值</h4><p>只有"攻击性"超此门槛的企业才参与提前锁定。</p><ul style="font-size:11px;color:var(--text-tertiary);padding-left:16px"><li>门槛 = 0.3：大部分企业参与抢跑（市场很卷）</li><li>门槛 = 0.6：只有攻击性极强的极少数企业抢跑</li><li>预期：门槛越低（抢跑企业越多），效率损失越大</li></ul></div>
+    <div class="explanation-card"><h4>模拟次数 — 蒙特卡洛稳定性</h4><p>每次模拟随机生成数据，次数越多统计越稳定。</p><ul style="font-size:11px;color:var(--text-tertiary);padding-left:16px"><li>30/50 次：快速预览，有随机波动</li><li>100 次：较好的统计稳定性</li><li>1000 次：高精度估算</li></ul></div>`;
 
-  // ── Variable explanations ──
-  document.getElementById('variable-explanations').innerHTML = `
-    <div class="explanation-card">
-      <h4>α (alpha) — Observable Quality Weight</h4>
-      <p>How much of "true value" is explained by what firms can currently see.</p>
-      <li>α = 0.9: Truth is almost fully observable; rush risk is low</li>
-      <li>α = 0.5: Observable and potential are equally weighted; mistakes spike</li>
-      <li>Expectation: Lower α → greater efficiency loss from rushing</li>
-    </div>
-    <div class="explanation-card">
-      <h4>Market Concentration — Slot Distribution</h4>
-      <p>How total hiring slots are distributed across large/medium/small firms.</p>
-      <li>Low: 25 equal firms, everyone competes → widespread rushing</li>
-      <li>Medium: 5 large + 10 medium + 10 small → large firms relax, small rush</li>
-      <li>High: 3 giants + 22 small → giants don't rush, small firms scramble</li>
-      <li>Expectation: Concentration changes WHO rushes, not just how much</li>
-    </div>
-    <div class="explanation-card">
-      <h4>Rush Threshold — Aggressiveness Cutoff</h4>
-      <p>Only firms with aggressiveness above this threshold make early offers.</p>
-      <li>Threshold = 0.3: Most firms rush (highly competitive market)</li>
-      <li>Threshold = 0.6: Only the most aggressive firms rush</li>
-      <li>Expectation: Lower threshold (more rushing) → greater efficiency loss</li>
-    </div>
-    <div class="explanation-card">
-      <h4>Simulation Runs — Monte Carlo Stability</h4>
-      <p>Each run generates random candidates and firms. More runs = more stable estimates.</p>
-      <li>30/50 runs: Quick preview with some random fluctuation</li>
-      <li>100 runs: Good statistical stability</li>
-      <li>1000 runs: High-precision estimates</li>
-    </div>
-  `;
-
-  // ── Controls ──
+  // 控制栏
   renderControls();
 
-  // ── Company Overview ──
-  const comps = getCompanies();
-  const totalSlots = comps.reduce((s,c) => s + c.capacity, 0);
-  const large = comps.filter(c => c.sizeLabel === '大型');
-  const medium = comps.filter(c => c.sizeLabel === '中型');
-  const small = comps.filter(c => c.sizeLabel === '小型');
-  const avgAg = Math.round(comps.reduce((s,c) => s + c.aggressiveness, 0) / comps.length * 100);
+  // 企业概览
+  const comps=generateCompanies(conc);const ts=comps.reduce((s,c)=>s+c.capacity,0);
+  const lg=comps.filter(c=>c.sizeLabel==='大型'),md=comps.filter(c=>c.sizeLabel==='中型'),sm=comps.filter(c=>c.sizeLabel==='小型');
+  const aa=Math.round(comps.reduce((s,c)=>s+c.aggressiveness,0)/comps.length*100);
+  document.getElementById('company-overview').innerHTML=`
+    <div class="card"><div class="card-header">企业结构概览</div><div class="card-body">
+    <div class="stat-grid" style="margin-bottom:10px"><div class="stat-card"><div class="stat-value">${comps.length}</div><div class="stat-label">企业总数</div></div><div class="stat-card"><div class="stat-value">${ts}</div><div class="stat-label">总招聘名额</div></div><div class="stat-card"><div class="stat-value">${aa}%</div><div class="stat-label">平均抢跑倾向</div></div><div class="stat-card"><div class="stat-value" style="color:${ts<70?'var(--warning)':'var(--info)'}">${Math.round(ts/100*100)}%</div><div class="stat-label">名额/候选人比</div></div></div>
+    <table><tr><th>类别</th><th style="text-align:center">数量</th><th style="text-align:right">总名额</th><th style="text-align:right">占比</th></tr>
+    <tr><td>大型企业</td><td style="text-align:center">${lg.length}</td><td style="text-align:right">${lg.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${ts>0?Math.round(lg.reduce((s,c)=>s+c.capacity,0)/ts*100):0}%</td></tr>
+    <tr><td>中型企业</td><td style="text-align:center">${md.length}</td><td style="text-align:right">${md.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${ts>0?Math.round(md.reduce((s,c)=>s+c.capacity,0)/ts*100):0}%</td></tr>
+    <tr><td>小型企业</td><td style="text-align:center">${sm.length}</td><td style="text-align:right">${sm.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${ts>0?Math.round(sm.reduce((s,c)=>s+c.capacity,0)/ts*100):0}%</td></tr></table></div></div>`;
 
-  document.getElementById('company-overview').innerHTML = `
-    <div class="card">
-      <div class="card-header">Company Structure Overview</div>
-      <div class="card-body">
-        <div class="stat-grid" style="margin-bottom:10px">
-          <div class="stat-card"><div class="stat-value" id="stat-firms">${comps.length}</div><div class="stat-label">Total Firms</div></div>
-          <div class="stat-card"><div class="stat-value" id="stat-slots">${totalSlots}</div><div class="stat-label">Total Slots</div></div>
-          <div class="stat-card"><div class="stat-value" id="stat-agg">${avgAg}%</div><div class="stat-label">Avg Aggressiveness</div></div>
-          <div class="stat-card"><div class="stat-value" id="stat-ratio">${Math.round(totalSlots/100*100)}%</div><div class="stat-label">Slot/Candidate Ratio</div></div>
-        </div>
-        <table>
-          <tr><th>Category</th><th style="text-align:center">Count</th><th style="text-align:right">Total Slots</th><th style="text-align:right">Share</th></tr>
-          <tr><td>Large Firms</td><td style="text-align:center">${large.length}</td><td style="text-align:right">${large.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${totalSlots>0?Math.round(large.reduce((s,c)=>s+c.capacity,0)/totalSlots*100):0}%</td></tr>
-          <tr><td>Medium Firms</td><td style="text-align:center">${medium.length}</td><td style="text-align:right">${medium.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${totalSlots>0?Math.round(medium.reduce((s,c)=>s+c.capacity,0)/totalSlots*100):0}%</td></tr>
-          <tr><td>Small Firms</td><td style="text-align:center">${small.length}</td><td style="text-align:right">${small.reduce((s,c)=>s+c.capacity,0)}</td><td style="text-align:right">${totalSlots>0?Math.round(small.reduce((s,c)=>s+c.capacity,0)/totalSlots*100):0}%</td></tr>
-        </table>
-      </div>
-    </div>`;
+  // 关键统计
+  document.getElementById('key-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-value" id="al" style="color:${summary.avgLossPercent>2?'var(--warning)':'var(--info)'}">0</div><div class="stat-label">平均效率损失</div></div>
+    <div class="stat-card"><div class="stat-value" id="ad" style="color:${summary.avgDisplaced>3?'var(--danger)':'var(--warning)'}">0</div><div class="stat-label">平均错误锁定数</div></div>
+    <div class="stat-card"><div class="stat-value" id="ao">0</div><div class="stat-label">平均提前offer数</div></div>
+    <div class="stat-card"><div class="stat-value" id="aa2">0</div><div class="stat-label">平均接受数</div></div>
+    <div class="stat-card"><div class="stat-value" id="at">0</div><div class="stat-label">市场总名额</div></div>`;
+  setTimeout(()=>{animValue('al',summary.avgLossPercent,1000,1);animValue('ad',summary.avgDisplaced,800);animValue('ao',summary.avgOffersMade,800);animValue('aa2',summary.avgAccepted,800);animValue('at',summary.totalSlots,800)},100);
 
-  // ── Key Stats (animated) ──
-  document.getElementById('key-stats').innerHTML = `
-    <div class="stat-card"><div class="stat-value" id="anim-loss">0</div><div class="stat-label">Avg Efficiency Loss</div></div>
-    <div class="stat-card"><div class="stat-value" id="anim-disp">0</div><div class="stat-label">Avg Wrong Locks</div></div>
-    <div class="stat-card"><div class="stat-value" id="anim-offers">0</div><div class="stat-label">Avg Early Offers</div></div>
-    <div class="stat-card"><div class="stat-value" id="anim-accept">0</div><div class="stat-label">Avg Accepted</div></div>
-    <div class="stat-card"><div class="stat-value" id="anim-tslots">0</div><div class="stat-label">Market Slots</div></div>`;
-  setTimeout(() => {
-    animateValue('anim-loss', summary.avgLossPercent, 1000, 1);
-    animateValue('anim-disp', summary.avgDisplaced, 800);
-    animateValue('anim-offers', summary.avgOffersMade, 800);
-    animateValue('anim-accept', summary.avgAccepted, 800);
-    animateValue('anim-tslots', summary.totalSlots, 800);
-  }, 100);
+  // 福利对比卡
+  const gap=summary.avgOptimalWelfare-summary.avgRushWelfare;
+  const ratio=summary.avgOptimalWelfare>0?summary.avgRushWelfare/summary.avgOptimalWelfare:1;
+  document.getElementById('welfare-chart').innerHTML=`
+    <h3 style="margin-bottom:8px">总福利对比</h3>
+    <div class="card"><div class="card-header">完美竞争 vs 抢跑场景<span style="font-size:11px;color:var(--text-tertiary)">均值 (n=${runs})</span></div><div class="card-body">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px">
+      <div style="text-align:center;flex:1"><div class="welfare-big" id="aow">0</div><p style="font-size:11px;color:var(--text-secondary)">完美竞争总福利</p></div>
+      <div style="text-align:center;padding:0 12px"><span style="font-size:13px;font-weight:600">−${gap}</span><div style="width:28px;height:1px;background:var(--border);margin:4px auto"></div><span style="font-size:11px;color:var(--text-tertiary)">损失</span></div>
+      <div style="text-align:center;flex:1"><div class="welfare-big" id="arw">0</div><p style="font-size:11px;color:var(--text-secondary)">抢跑场景总福利</p></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-tertiary);margin-bottom:4px"><span>抢跑效率保留率: <span id="aret">0</span>%</span><span>损失: <span id="aloss">0</span>%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${ratio*100}%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);margin-top:3px"><span>0</span><span>${summary.avgOptimalWelfare}</span></div>
+    </div></div>`;
+  setTimeout(()=>{animValue('aow',summary.avgOptimalWelfare,1000);animValue('arw',summary.avgRushWelfare,1000);animValue('aret',Math.round(ratio*100),1000);animValue('aloss',Math.round((1-ratio)*1000)/10,1000,1)},150);
 
-  // ── Welfare Comparison (custom card) ──
-  const wGap = summary.avgOptimalWelfare - summary.avgRushWelfare;
-  const wRatio = summary.avgOptimalWelfare > 0 ? summary.avgRushWelfare / summary.avgOptimalWelfare : 1;
-  document.getElementById('welfare-chart').innerHTML = `
-    <div class="card">
-      <div class="card-header">Perfect Competition vs Rush<span style="font-size:11px;color:var(--text-tertiary)">Mean (n=${numRuns})</span></div>
-      <div class="card-body">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px">
-          <div style="text-align:center;flex:1"><div class="welfare-big" id="anim-optw">0</div><p style="font-size:11px;color:var(--text-secondary)">Optimal Welfare</p></div>
-          <div style="text-align:center;padding:0 12px"><span style="font-size:13px;font-weight:600;color:var(--danger)">-${wGap}</span><br><span style="font-size:11px;color:var(--text-tertiary)">Loss</span></div>
-          <div style="text-align:center;flex:1"><div class="welfare-big" id="anim-rushw">0</div><p style="font-size:11px;color:var(--text-secondary)">Rush Welfare</p></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-tertiary);margin-bottom:4px">
-          <span>Retention: <span id="anim-retention">0</span>%</span>
-          <span>Loss: <span id="anim-loss-pct">0</span>%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" id="welfare-bar" style="width:${wRatio*100}%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);margin-top:3px"><span>0</span><span>${summary.avgOptimalWelfare}</span></div>
-      </div>
-    </div>`;
-  setTimeout(() => {
-    animateValue('anim-optw', summary.avgOptimalWelfare, 1000);
-    animateValue('anim-rushw', summary.avgRushWelfare, 1000);
-    animateValue('anim-retention', Math.round(wRatio * 100), 1000);
-    animateValue('anim-loss-pct', Math.round((1-wRatio)*1000)/10, 1000, 1);
-  }, 150);
+  // 损失分布
+  const bkt={'无损失':0,'低 (<2%)':0,'中 (2-5%)':0,'高 (>5%)':0};
+  for(const r of results){if(r.lossPercent===0)bkt['无损失']++;else if(r.lossPercent<2)bkt['低 (<2%)']++;else if(r.lossPercent<=5)bkt['中 (2-5%)']++;else bkt['高 (>5%)']++}
+  renderBarChart('loss-dist-chart',Object.keys(bkt),[{name:'轮次数',data:Object.values(bkt)}]);
+  document.getElementById('loss-dist-caption').textContent=`${runs} 次模拟中损失的分布`;
 
-  // ── Loss Distribution ──
-  const buckets = { 'No Loss': 0, 'Low\n(<2%)': 0, 'Mid\n(2-5%)': 0, 'High\n(>5%)': 0 };
-  for (const r of results) {
-    if (r.lossPercent === 0) buckets['No Loss']++;
-    else if (r.lossPercent < 2) buckets['Low\n(<2%)']++;
-    else if (r.lossPercent <= 5) buckets['Mid\n(2-5%)']++;
-    else buckets['High\n(>5%)']++;
-  }
-  renderBarChart('loss-dist-chart',
-    Object.keys(buckets),
-    [{ name: 'Rounds', data: Object.values(buckets) }],
-    160);
+  // 规模分布
+  const ldA=[],mdA=[],sdA=[];
+  for(const r of results)for(const m of r.rushMatches){const cp=r.companies.find(c=>c.id===m.companyId);if(!cp||r.optimalMatches.some(om=>om.candidateId===m.candidateId))continue;if(cp.sizeLabel==='大型')ldA.push(m.candidateId);else if(cp.sizeLabel==='中型')mdA.push(m.candidateId);else sdA.push(m.candidateId)}
+  renderBarChart('size-chart',['大型企业','中型企业','小型企业'],[{name:'每轮平均错误锁定',data:[Math.round(ldA.length/runs),Math.round(mdA.length/runs),Math.round(sdA.length/runs)],tone:'danger'}]);
 
-  // ── Size chart ──
-  const ld = [], md = [], sd = [];
-  for (const r of results) for (const m of r.rushMatches) {
-    const comp = r.companies.find(c => c.id === m.companyId);
-    if (!comp || r.optimalMatches.some(om => om.candidateId === m.candidateId)) continue;
-    if (comp.sizeLabel === '大型') ld.push(m.candidateId);
-    else if (comp.sizeLabel === '中型') md.push(m.candidateId);
-    else sd.push(m.candidateId);
-  }
-  renderBarChart('size-chart',
-    ['Large', 'Medium', 'Small'],
-    [{ name: 'Avg Wrong Locks', data: [
-      Math.round(ld.length / numRuns),
-      Math.round(md.length / numRuns),
-      Math.round(sd.length / numRuns)
-    ], tone: 'danger' }],
-    160);
-
-  // ── Offer chart ──
-  document.getElementById('offer-chart').innerHTML = `
-    <div style="display:flex;justify-content:center;gap:40px;padding:30px 0;align-items:flex-end;">
-      <div style="text-align:center">
-        <div style="font-size:32px;font-weight:700;color:var(--accent)" id="anim-made">0</div>
-        <p style="font-size:11px;color:var(--text-secondary)">Made</p>
-      </div>
+  // offer 图
+  document.getElementById('offer-chart').innerHTML=`
+    <div style="display:flex;justify-content:center;gap:40px;padding:24px 0;align-items:flex-end">
+      <div style="text-align:center"><div class="welfare-big" id="ao2" style="color:var(--accent)">0</div><p style="font-size:11px;color:var(--text-secondary)">发出 offer</p></div>
       <div style="font-size:20px;color:var(--text-tertiary);padding-bottom:20px">→</div>
-      <div style="text-align:center">
-        <div style="font-size:32px;font-weight:700;color:var(--warning)" id="anim-acc">0</div>
-        <p style="font-size:11px;color:var(--text-secondary)">Accepted</p>
-      </div>
-    </div>
-    <p style="font-size:11px;color:var(--text-tertiary);text-align:center">
-      Acceptance rate: ${summary.avgOffersMade > 0 ? Math.round(summary.avgAccepted / summary.avgOffersMade * 100) + '%' : '—'}
-    </p>`;
-  setTimeout(() => {
-    animateValue('anim-made', summary.avgOffersMade, 800);
-    animateValue('anim-acc', summary.avgAccepted, 800);
-  }, 200);
-
-  // ── Detail Table ──
-  document.getElementById('detail-table').innerHTML = `<table>
-    <tr><th>Round</th><th style="text-align:right">Optimal</th><th style="text-align:right">Rush</th><th style="text-align:right">Loss</th><th style="text-align:right">Loss%</th><th style="text-align:center">Offers</th><th style="text-align:center">Accepted</th><th style="text-align:center">Wrong Lock</th></tr>
-    ${results.slice(0, 10).map(r => {
-      const marker = r.lossPercent > 3 ? 'tone-danger' : r.lossPercent > 0 ? 'tone-warning' : 'tone-success';
-      return `<tr><td><span class="row-tone ${marker}"></span>${r.round}</td><td style="text-align:right">${r.optimalWelfare}</td><td style="text-align:right">${r.rushWelfare}</td><td style="text-align:right">${r.welfareLoss}</td><td style="text-align:right">${r.lossPercent.toFixed(1)}%</td><td style="text-align:center">${r.earlyOffersMade}</td><td style="text-align:center">${r.earlyOffersAccepted}</td><td style="text-align:center">${r.candidatesDisplaced}</td></tr>`;
-    }).join('')}
-  </table>`;
-
-  // ── Callout dynamic text ──
-  document.getElementById('callout-unobs').textContent = (100 - alpha * 100).toFixed(0) + '%';
-
-  // ── Footer ──
-  const concLabel = concentration < 0.33 ? 'Low' : concentration < 0.66 ? 'Mid' : 'High';
-  document.getElementById('footer-params').textContent = `α=${alpha.toFixed(1)} | Conc=${concLabel} | Threshold=${earlyThreshold.toFixed(1)} | n=${numRuns}`;
-}
-
-function renderControls() {
-  document.getElementById('controls').innerHTML = `
-    <div class="control-row">
-      <span class="control-label">α (Observable Weight):</span>
-      <div class="pill-group">${[0.5,0.6,0.7,0.8,0.9].map(v => `<span class="pill${alpha===v?' active':''}" onclick="setAlpha(${v})">${v.toFixed(1)}</span>`).join('')}</div>
-    </div>
-    <div class="control-row">
-      <span class="control-label">Market Concentration:</span>
-      <div class="pill-group">${[{v:0.15,l:'Low'},{v:0.50,l:'Mid'},{v:0.85,l:'High'}].map(({v,l}) => `<span class="pill${concentration===v?' active':''}" onclick="setConcentration(${v})">${l}</span>`).join('')}</div>
-    </div>
-    <div class="control-row">
-      <span class="control-label">Rush Threshold:</span>
-      <div class="pill-group">${[0.3,0.4,0.5,0.6].map(v => `<span class="pill${earlyThreshold===v?' active':''}" onclick="setThreshold(${v})">${v.toFixed(1)}</span>`).join('')}</div>
-    </div>
-    <div class="control-row">
-      <span class="control-label">Runs:</span>
-      <div class="pill-group">${[30,50,100,1000].map(v => `<span class="pill${numRuns===v?' active':''}" onclick="setRuns(${v})">${v}</span>`).join('')}</div>
-      <button class="btn btn-primary" onclick="rerun()">Re-run</button>
+      <div style="text-align:center"><div class="welfare-big" id="aa3" style="color:var(--warning)">0</div><p style="font-size:11px;color:var(--text-secondary)">被接受</p></div>
     </div>`;
+  setTimeout(()=>{animValue('ao2',summary.avgOffersMade,800);animValue('aa3',summary.avgAccepted,800)},200);
+  document.getElementById('offer-rate-caption').textContent=`接受率: ${summary.avgOffersMade>0?Math.round(summary.avgAccepted/summary.avgOffersMade*100)+'%':'—'}`;
+
+  // 详表
+  document.getElementById('detail-table').innerHTML=`<table><tr><th>轮次</th><th style="text-align:right">完美福利</th><th style="text-align:right">抢跑福利</th><th style="text-align:right">损失</th><th style="text-align:right">损失%</th><th style="text-align:center">提前offer</th><th style="text-align:center">接受</th><th style="text-align:center">错误锁定</th></tr>
+    ${results.slice(0,10).map(r=>{const mk=r.lossPercent>3?'tone-danger':r.lossPercent>0?'tone-warning':'tone-success';return`<tr><td><span class="row-tone ${mk}"></span>${r.round}</td><td style="text-align:right">${r.optimalWelfare}</td><td style="text-align:right">${r.rushWelfare}</td><td style="text-align:right">${r.welfareLoss}</td><td style="text-align:right">${r.lossPercent.toFixed(1)}%</td><td style="text-align:center">${r.earlyOffersMade}</td><td style="text-align:center">${r.earlyOffersAccepted}</td><td style="text-align:center">${r.candidatesDisplaced}</td></tr>`}).join('')}</table>`;
+
+  document.getElementById('callout-unobs').textContent=(100-alpha*100).toFixed(0)+'%';
+  const cl=conc<.33?'低':conc<.66?'中':'高';
+  document.getElementById('footer-params').textContent=`α=${alpha.toFixed(1)} | 集中度=${cl} | 门槛=${th.toFixed(1)} | n=${runs}`;
 }
 
-function setAlpha(v) { alpha = v; renderAll(); }
-function setConcentration(v) { concentration = v; renderAll(); }
-function setThreshold(v) { earlyThreshold = v; renderAll(); }
-function setRuns(v) { numRuns = v; renderAll(); }
-function rerun() { renderAll(); }
+function renderControls(){
+  document.getElementById('controls').innerHTML=`
+    <div class="control-row"><span class="control-label">α (可观测权重):</span><div class="pill-group">${[.5,.6,.7,.8,.9].map(v=>`<span class="pill${alpha===v?' active':''}" onclick="setA(${v})">${v.toFixed(1)}</span>`).join('')}</div></div>
+    <div class="control-row"><span class="control-label">市场集中度:</span><div class="pill-group">${[{v:.15,l:'低'},{v:.5,l:'中'},{v:.85,l:'高'}].map(({v,l})=>`<span class="pill${conc===v?' active':''}" onclick="setC(${v})">${l}</span>`).join('')}</div></div>
+    <div class="control-row"><span class="control-label">抢跑门槛:</span><div class="pill-group">${[.3,.4,.5,.6].map(v=>`<span class="pill${th===v?' active':''}" onclick="setT(${v})">${v.toFixed(1)}</span>`).join('')}</div></div>
+    <div class="control-row"><span class="control-label">模拟次数:</span><div class="pill-group">${[30,50,100,1000].map(v=>`<span class="pill${runs===v?' active':''}" onclick="setR(${v})">${v}</span>`).join('')}</div><button class="btn btn-primary" onclick="rerun()">重新模拟</button></div>`;
+}
 
-// Initial render
+function setA(v){alpha=v;renderAll()}function setC(v){conc=v;renderAll()}function setT(v){th=v;renderAll()}function setR(v){runs=v;renderAll()}function rerun(){renderAll()}
+
+// 敏感度分析
+function runSensitivity(){
+  document.getElementById('senBtn').disabled=true;
+  document.getElementById('senStatus').style.display='inline';
+  document.getElementById('senStatus').innerHTML='<span class="pulse">正在运行 7 组 α × 30 次模拟...</span>';
+  setTimeout(()=>{
+    const d=[];
+    for(const a of[.3,.4,.5,.6,.7,.8,.9]){
+      const{summary:s}=runSims(30,a,conc,th);
+      d.push({label:`α=${a.toFixed(1)}`,avgLoss:s.avgLossPercent,disp:s.avgDisplaced});
+    }
+    renderBarChart('senResult',d.map(x=>x.label),[{name:'平均效率损失 (%)',data:d.map(x=>Math.round(x.avgLoss*10)/10),tone:'warning'},{name:'平均错误锁定',data:d.map(x=>x.disp),tone:'danger'}],220);
+    document.getElementById('senBtn').disabled=false;
+    document.getElementById('senStatus').style.display='none';
+    if(!document.getElementById('senResult').innerHTML)document.getElementById('senResult').style.display='block';
+    else document.getElementById('senResult').style.display='block';
+  },100);
+}
+
 renderAll();
 </script>
 </body>
