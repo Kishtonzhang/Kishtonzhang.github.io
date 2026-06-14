@@ -9,5 +9,7 @@
 main:
   - title: "Notes"
     url: /notes/
+  - title: "Toys"
+    url: /toys/
 
 
