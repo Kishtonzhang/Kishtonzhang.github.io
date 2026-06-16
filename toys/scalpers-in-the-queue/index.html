@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排队黄牛市场模拟 — Toys</title>
+<style>
+:root{--bg:#fafafa;--card-bg:#fff;--text:#333;--text-secondary:#666;--text-tertiary:#999;--border:#e0e0e0;--accent:#2563eb;--success:#3FA266;--warning:#D4A03C;--danger:#E0556A;--fill-tertiary:#f3f4f6;--radius:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px;max-width:1100px;margin:0 auto}
+h1{font-size:24px;margin-bottom:8px}h2{font-size:18px;margin-bottom:8px;font-weight:600}h3{font-size:15px;margin-bottom:6px;font-weight:600}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}
+.card-header{padding:8px 14px;font-size:12px;font-weight:600;color:var(--text-secondary);border-bottom:1px solid var(--border)}
+.card-body{padding:14px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-card{text-align:center;padding:12px 8px}
+.stat-value{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.stat-label{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.slider-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.slider-row label{font-size:12px;color:var(--text-secondary);min-width:90px;white-space:nowrap}
+.slider-row input[type=range]{flex:1;accent-color:var(--accent);height:4px;cursor:pointer}
+.slider-row .val{font-size:12px;min-width:28px;text-align:right}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.gap-20>*+*{margin-top:20px}.gap-12>*+*{margin-top:12px}.gap-10>*+*{margin-top:10px}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:4px}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end}
+.bar{width:100%;max-width:50px;border-radius:4px 4px 0 0;transition:height .3s ease-out;min-width:16px}
+.bar-value{font-size:11px;font-weight:600;text-align:center;margin-bottom:4px}
+.bar-label{font-size:10px;color:var(--text-tertiary);text-align:center;margin-top:4px}
+.bar-legend{display:flex;gap:14px;justify-content:center;margin-top:6px;font-size:11px;flex-wrap:wrap}
+.pie-wrap{display:flex;justify-content:center;align-items:center}
+.pie-legend{font-size:12px;margin-top:10px}
+.pie-legend-row{display:flex;justify-content:space-between;padding:3px 0}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.delta-box{text-align:center;padding:20px 28px;border-radius:8px;margin-top:10px}
+.delta-big{font-size:32px;font-weight:700;margin-top:6px}
+.type-note{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+@media(max-width:768px){.two-col,.stat-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="gap-20">
+
+<div>
+  <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px"><a href="/toys/" style="color:var(--accent);text-decoration:none">← Toys</a></p>
+  <h1>排队黄牛市场模拟 — Scalpers in the Queue</h1>
+  <p style="color:var(--text-secondary);font-size:14px">制度 A（纯 FCFS 排队）vs 制度 B（FCFS + 黄牛）。拖动滑块调节参数，观察 ΔW 如何变号。</p>
+</div>
+
+<div class="divider"></div>
+
+<h2>参数调节</h2>
+
+<div class="card">
+  <div class="card-header">市场容量</div>
+  <div class="card-body">
+    <div class="slider-row"><label>顾客数 N</label><input type="range" id="sN" min="3" max="60" value="30"><span class="val" id="vN">30</span></div>
+    <div class="slider-row"><label>座位数 K</label><input type="range" id="sK" min="1" max="30" value="12"><span class="val" id="vK">12</span></div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-header">餐食估值 θ</div>
+    <div class="card-body">
+      <div class="slider-row"><label>θ_L</label><input type="range" id="sThL" min="1" max="40" value="10"><span class="val" id="vThL">10</span></div>
+      <div class="slider-row"><label>θ_H</label><input type="range" id="sThH" min="2" max="100" value="50"><span class="val" id="vThH">50</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">等待成本 c（每期）</div>
+    <div class="card-body">
+      <div class="slider-row"><label>c_L</label><input type="range" id="sCL" min="0" max="20" value="2"><span class="val" id="vCL">2</span></div>
+      <div class="slider-row"><label>c_H</label><input type="range" id="sCH" min="1" max="40" value="15"><span class="val" id="vCH">15</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">黄牛成本 cₛ</div>
+  <div class="card-body">
+    <div class="slider-row"><label>cₛ</label><input type="range" id="sCS" min="0" max="50" value="8"><span class="val" id="vCS">8</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">顾客类型分布 π（概率权重，自动归一化）</div>
+  <div class="card-body">
+    <div class="two-col">
+      <div>
+        <div class="slider-row"><label>LL 无所谓型</label><input type="range" id="sPLL" min="0" max="60" value="15"><span class="val" id="vPLL">15</span></div>
+        <div class="slider-row"><label>LH 暴躁路人</label><input type="range" id="sPLH" min="0" max="60" value="15"><span class="val" id="vPLH">15</span></div>
+      </div>
+      <div>
+        <div class="slider-row"><label>HL 耐心美食家</label><input type="range" id="sPHL" min="0" max="60" value="35"><span class="val" id="vPHL">35</span></div>
+        <div class="slider-row"><label>HH 急切美食家</label><input type="range" id="sPHH" min="0" max="60" value="35"><span class="val" id="vPHH">35</span></div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-tertiary);margin-top:8px" id="normLabel"></p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<h2>顾客类型分布</h2>
+<div class="two-col">
+  <div class="card"><div class="card-body"><div class="pie-wrap" id="pieChart"></div><div class="pie-legend" id="pieLegend"></div></div></div>
+  <div class="card">
+    <div class="card-header">类型说明</div>
+    <div class="card-body gap-10" id="typeExplain"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<h2>制度对比</h2>
+<div class="two-col">
+  <div class="card">
+    <div class="card-header">制度 A — 纯 FCFS（无黄牛）</div>
+    <div class="card-body gap-12">
+      <p style="font-size:12px;color:var(--text-secondary)">顾客按随机顺序到达。前 K 个未弃号的顾客获得座位。弃号条件：θ − c × (位置 − 1) &lt; 0。</p>
+      <h3>各类型获得的座位</h3>
+      <div id="barA"></div>
+      <div class="stat-grid" id="statsA"></div>
+      <p style="font-size:12px;color:var(--text-tertiary)" id="orderA"></p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">制度 B — FCFS + 黄牛</div>
+    <div class="card-body gap-12">
+      <p style="font-size:12px;color:var(--text-secondary" id="regimeBDesc"></p>
+      <h3>各类型获得的座位</h3>
+      <div id="barB"></div>
+      <div class="stat-grid" id="statsB"></div>
+      <div class="stat-grid" id="scalperStats"></div>
+      <p style="font-size:12px;color:var(--text-tertiary)" id="orderB"></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<h2>福利分解：ΔW = 配置改善 − 拥堵放大</h2>
+<div class="two-col">
+  <div class="card">
+    <div class="card-body gap-12">
+      <div style="text-align:center"><div class="stat-label">ΔW = W<sub>B</sub> − W<sub>A</sub></div><div class="stat-value" id="deltaTop" style="font-size:28px">0</div></div>
+      <div id="barDecomp"></div>
+      <div class="stat-grid" id="decompStats"></div>
+      <p style="font-size:12px;color:var(--text-tertiary">配置改善 = 入座顾客的总估值差（制度 B − 制度 A）。拥堵放大 = 总等待时间差 + 黄牛排队成本。</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body gap-12">
+      <h3>福利明细</h3>
+      <div class="stat-grid" id="welfareDetail"></div>
+      <div class="divider" style="margin:14px 0"></div>
+      <div class="delta-box" id="deltaBox">
+        <div style="font-size:12px;color:var(--text-secondary)">ΔW = W<sub>B</sub> − W<sub>A</sub></div>
+        <div class="delta-big" id="deltaBig">0</div>
+        <div style="font-size:12px" id="deltaMsg"></div>
+      </div>
+      <p style="font-size:12px;color:var(--text-tertiary">调节建议：增大 HH 比例或减小 cₛ → ΔW 转正。减小 HH 比例或增大 cₛ → ΔW 转负。</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<p style="font-size:11px;color:var(--text-tertiary);text-align:center">基于 "Scalpers in the Queue: Allocation and Congestion in FCFS Markets"（Zhu, Wang &amp; Zhang 2026）。核心结论：ΔW = 配置改善 − 拥堵放大，符号取决于顾客类型分布与黄牛排队成本，不存在一刀切的黄牛政策。</p>
+
+</div>
+
+<script>
+// ── 模拟引擎 ─────────────────────────────────────────────────────────────────
+function sim(p) {
+  const types = ["LL", "LH", "HL", "HH"];
+  const tMap = { LL: [p.thetaL, p.cL], LH: [p.thetaL, p.cH], HL: [p.thetaH, p.cL], HH: [p.thetaH, p.cH] };
+
+  const raw = {
+    LL: Math.round(p.piLL * p.N), LH: Math.round(p.piLH * p.N),
+    HL: Math.round(p.piHL * p.N), HH: Math.round(p.piHH * p.N),
+  };
+  let tot = raw.LL + raw.LH + raw.HL + raw.HH;
+  if (p.N - tot > 0) raw.HH += p.N - tot;
+  else if (p.N - tot < 0 && raw.LL > 1) raw.LL += p.N - tot;
+
+  const customers = [];
+  for (const t of types) {
+    for (let i = 0; i < raw[t]; i++) {
+      customers.push({ type: t, theta: tMap[t][0], c: tMap[t][1] });
+    }
+  }
+
+  const groups = { LL: [], LH: [], HL: [], HH: [] };
+  for (const c of customers) groups[c.type].push(c);
+  const order = [];
+  const idx = { LL: 0, LH: 0, HL: 0, HH: 0 };
+  while (order.length < customers.length) {
+    for (const t of types) {
+      if (idx[t] < groups[t].length) { order.push(groups[t][idx[t]]); idx[t]++; }
+    }
+  }
+
+  const seatedA = { LL: 0, LH: 0, HL: 0, HH: 0 };
+  const vizA = [];
+  let totalValueA = 0, waitCostA = 0, seatPosA = 0;
+  for (let i = 0; i < order.length && seatPosA < p.K; i++) {
+    const c = order[i];
+    if (c.theta - c.c * i >= 0) {
+      seatedA[c.type]++;
+      totalValueA += c.theta;
+      waitCostA += c.c * seatPosA;
+      vizA.push(c.type);
+      seatPosA++;
+    }
+  }
+  const wA = totalValueA - waitCostA;
+
+  let bestM = 0, bestP = 0, bestProfit = -Infinity;
+  for (let m = 0; m < p.K; m++) {
+    for (let P = 0; P <= p.thetaH; P += p.thetaH / 60) {
+      let buyers = 0;
+      for (let i = 0; i < order.length; i++) {
+        const c = order[i];
+        const q = i + 1;
+        if (q <= m) continue;
+        const stayU = c.theta - c.c * (q - 1);
+        if (c.theta - P > Math.max(0, stayU)) buyers++;
+      }
+      const sales = Math.min(m, buyers);
+      const hold = p.cs * m * (m - 1) / 2;
+      const profit = P * sales - hold;
+      if (profit > bestProfit) { bestProfit = profit; bestM = m; bestP = P; }
+    }
+  }
+
+  const mStar = bestM, pStar = bestP;
+  const seatedB = { LL: 0, LH: 0, HL: 0, HH: 0 };
+  const vizB = [];
+  const entries = [];
+
+  for (let i = 0; i < mStar; i++) {
+    entries.push({ c: { type: "LL", theta: 0, c: 0 }, q: i + 1, act: "scalper" });
+  }
+
+  let scalperSold = 0;
+  for (let i = 0; i < order.length; i++) {
+    const c = order[i];
+    const q = i + 1 + mStar;
+    if (q > p.N) continue;
+    const stayU = c.theta - c.c * (q - 1);
+    const buyU = c.theta - pStar;
+    if (buyU > Math.max(0, stayU) && scalperSold < mStar) {
+      entries.push({ c, q, act: "buy" }); scalperSold++;
+    } else if (stayU >= 0) {
+      entries.push({ c, q, act: "stay" });
+    } else {
+      entries.push({ c, q, act: "abandon" });
+    }
+  }
+
+  let totalValueB = 0, waitCostB = 0, seatB = 0;
+  for (const e of entries.filter(x => x.act === "buy")) {
+    if (seatB >= p.K) break;
+    seatedB[e.c.type]++; totalValueB += e.c.theta; seatB++;
+    vizB.push("B-" + e.c.type);
+  }
+  let stayPos = 0;
+  for (const e of entries.filter(x => x.act === "stay")) {
+    if (seatB >= p.K) break;
+    seatedB[e.c.type]++; totalValueB += e.c.theta;
+    waitCostB += e.c.c * stayPos; seatB++; stayPos++;
+    vizB.push(e.c.type);
+  }
+  const sCost = p.cs * mStar * (mStar - 1) / 2;
+  const wB = totalValueB - waitCostB - sCost;
+
+  return {
+    seatedA, seatedB,
+    welfareA: wA, welfareB: wB,
+    allocGain: totalValueB - totalValueA,
+    congestionAmp: (waitCostB - waitCostA) + sCost,
+    deltaW: wB - wA,
+    mStar, pStar,
+    scalperProfit: bestProfit,
+    scalperCost: sCost,
+    vizA, vizB,
+    totalValueA, totalValueB,
+    waitCostA, waitCostB,
+  };
+}
+
+const fmt = (n, d = 1) => n.toFixed(d);
+const fi = n => Math.round(n).toString();
+const PIE_COLORS = ["#94a3b8", "#f59e0b", "#3b82f6", "#ef4444"];
+const typeChinese = { LL: "LL 无所谓型", LH: "LH 暴躁路人", HL: "HL 耐心美食家", HH: "HH 急切美食家" };
+
+const state = {
+  N: 30, K: 12, thL: 10, thH: 50, cL: 2, cH: 15, cs: 8,
+  pLL: 15, pLH: 15, pHL: 35, pHH: 35,
+};
+
+function getParams() {
+  const s = state.pLL + state.pLH + state.pHL + state.pHH;
+  const n = s > 0 ? 1 / s : 0.25;
+  return {
+    N: state.N, K: state.K,
+    thetaL: state.thL, thetaH: state.thH,
+    cL: state.cL, cH: state.cH, cs: state.cs,
+    piLL: state.pLL * n, piLH: state.pLH * n,
+    piHL: state.pHL * n, piHH: state.pHH * n,
+  };
+}
+
+function renderBar(id, cats, series, ht = 140) {
+  const el = document.getElementById(id);
+  const mx = Math.max(...series.flatMap(s => s.data.map(Math.abs)), 1);
+  let h = `<div class="bar-chart" style="height:${ht}px">`;
+  for (let i = 0; i < cats.length; i++) {
+    h += `<div class="bar-col"><div style="display:flex;flex-direction:column-reverse;align-items:center;width:100%;height:100%">`;
+    for (const sr of series) {
+      const v = sr.data[i];
+      const pct = mx > 0 ? (Math.abs(v) / mx * 100) : 0;
+      const bg = sr.tone === "success" ? "var(--success)" : sr.tone === "danger" ? "var(--danger)" : "var(--accent)";
+      h += `<div class="bar" style="height:${pct}%;background:${bg}"></div>`;
+    }
+    h += `<div class="bar-value">${series[0].data[i]}</div></div><div class="bar-label">${cats[i]}</div></div>`;
+  }
+  h += `</div><div class="bar-legend">`;
+  for (const sr of series) {
+    const bg = sr.tone === "success" ? "var(--success)" : sr.tone === "danger" ? "var(--danger)" : "var(--accent)";
+    h += `<span><span class="dot" style="background:${bg}"></span>${sr.name}</span>`;
+  }
+  h += `</div>`;
+  el.innerHTML = h;
+}
+
+function renderPie(pp) {
+  const data = [
+    { label: "LL", pct: pp.piLL * 100 },
+    { label: "LH", pct: pp.piLH * 100 },
+    { label: "HL", pct: pp.piHL * 100 },
+    { label: "HH", pct: pp.piHH * 100 },
+  ];
+  let cum = 0;
+  const slices = data.map((d, i) => {
+    const start = cum; cum += d.pct;
+    return { ...d, start, end: cum, color: PIE_COLORS[i] };
+  });
+  const r = 80, cx = 100, cy = 100;
+  let paths = "";
+  for (const s of slices) {
+    if (s.pct <= 0) continue;
+    const a1 = (s.start / 100) * 2 * Math.PI - Math.PI / 2;
+    const a2 = (s.end / 100) * 2 * Math.PI - Math.PI / 2;
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
+    const large = s.pct > 50 ? 1 : 0;
+    paths += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="${s.color}"/>`;
+  }
+  document.getElementById("pieChart").innerHTML = `<svg width="200" height="200" viewBox="0 0 200 200">${paths}</svg>`;
+  document.getElementById("pieLegend").innerHTML = data.map((d, i) =>
+    `<div class="pie-legend-row"><span><span class="dot" style="background:${PIE_COLORS[i]}"></span>${typeChinese[d.label]}</span><span>${fmt(d.pct, 0)}%</span></div>`
+  ).join("");
+}
+
+function statHTML(label, value, tone) {
+  const color = tone === "success" ? "var(--success)" : tone === "warning" ? "var(--warning)" : tone === "danger" ? "var(--danger)" : "";
+  return `<div class="stat-card"><div class="stat-value" style="color:${color}">${value}</div><div class="stat-label">${label}</div></div>`;
+}
+
+function renderAll() {
+  const pp = getParams();
+  const r = sim(pp);
+
+  document.getElementById("normLabel").textContent =
+    `归一化后：LL ${fmt(pp.piLL * 100, 0)}% | LH ${fmt(pp.piLH * 100, 0)}% | HL ${fmt(pp.piHL * 100, 0)}% | HH ${fmt(pp.piHH * 100, 0)}%`;
+
+  renderPie(pp);
+
+  const typeInfo = [
+    ["LL", state.thL, state.cL, pp.piLL],
+    ["LH", state.thL, state.cH, pp.piLH],
+    ["HL", state.thH, state.cL, pp.piHL],
+    ["HH", state.thH, state.cH, pp.piHH],
+  ];
+  document.getElementById("typeExplain").innerHTML = typeInfo.map(([t, th, c, pi]) => {
+    const qBar = Math.floor(th / c) + 1;
+    const expr = th - c * (qBar - 1);
+    return `<div><div style="display:flex;justify-content:space-between;font-size:12px"><span>${typeChinese[t]}</span><span style="color:var(--text-tertiary)">${fmt(pi * 100, 0)}%</span></div><div class="type-note">θ=${th}  c=${c}  →  在第 ≥${qBar} 个位置弃号 (θ−c·(q−1) = ${expr} ≤ 0)</div></div>`;
+  }).join("");
+
+  renderBar("barA", ["LL", "LH", "HL", "HH"], [{ name: "制度 A 座位", data: [r.seatedA.LL, r.seatedA.LH, r.seatedA.HL, r.seatedA.HH] }]);
+  document.getElementById("statsA").innerHTML =
+    statHTML("总估值", fi(r.totalValueA)) + statHTML("等待成本", fi(r.waitCostA), "warning") + statHTML("福利 W<sub>A</sub>", fi(r.welfareA));
+  document.getElementById("orderA").textContent = "就座顺序：" + r.vizA.slice(0, pp.K).join(" → ");
+
+  document.getElementById("regimeBDesc").textContent =
+    `黄牛占 m* = ${r.mStar} 个前排位置，卖价 P* = ${fmt(r.pStar)}。顾客可选择：购买（支付 P*，w=0）、等待、弃号。`;
+  renderBar("barB", ["LL", "LH", "HL", "HH"], [{ name: "制度 B 座位", data: [r.seatedB.LL, r.seatedB.LH, r.seatedB.HL, r.seatedB.HH] }]);
+  document.getElementById("statsB").innerHTML =
+    statHTML("总估值", fi(r.totalValueB)) + statHTML("等待成本", fi(r.waitCostB), "warning") + statHTML("福利 W<sub>B</sub>", fi(r.welfareB));
+  document.getElementById("scalperStats").innerHTML =
+    statHTML("黄牛占位 m*", String(r.mStar)) + statHTML("黄牛定价 P*", fmt(r.pStar)) + statHTML("黄牛利润", fmt(Math.max(0, r.scalperProfit)));
+  document.getElementById("orderB").textContent = "就座顺序：" + r.vizB.slice(0, pp.K).join(" → ") + (r.mStar > 0 ? "（B- 表示通过黄牛购买）" : "");
+
+  const sign = r.deltaW >= 0 ? "+" : "";
+  const dColor = r.deltaW > 0 ? "var(--success)" : r.deltaW < 0 ? "var(--danger)" : "var(--text-secondary)";
+  document.getElementById("deltaTop").textContent = sign + fmt(r.deltaW);
+  document.getElementById("deltaTop").style.color = dColor;
+
+  renderBar("barDecomp", ["福利分解"], [
+    { name: "配置改善", data: [Math.max(0, r.allocGain)], tone: "success" },
+    { name: "拥堵放大", data: [Math.abs(r.congestionAmp)], tone: "danger" },
+  ]);
+  document.getElementById("decompStats").innerHTML =
+    statHTML("配置改善", "+" + fmt(r.allocGain), "success") + statHTML("拥堵放大", "-" + fmt(r.congestionAmp), "danger") + statHTML("ΔW", sign + fmt(r.deltaW));
+
+  document.getElementById("welfareDetail").innerHTML =
+    statHTML("W<sub>A</sub>（纯 FCFS）", fi(r.welfareA)) +
+    statHTML("W<sub>B</sub>（FCFS+黄牛）", fi(r.welfareB)) +
+    statHTML("黄牛收入", fmt(r.pStar * Math.min(r.mStar, r.seatedB.HH + r.seatedB.HL))) +
+    statHTML("黄牛排队成本", "-" + fmt(r.scalperCost), "warning");
+
+  const bg = r.deltaW > 0 ? "rgba(63,162,102,0.12)" : r.deltaW < 0 ? "rgba(224,85,106,0.12)" : "var(--fill-tertiary)";
+  document.getElementById("deltaBox").style.background = bg;
+  document.getElementById("deltaBig").textContent = sign + fmt(r.deltaW);
+  document.getElementById("deltaBig").style.color = dColor;
+  document.getElementById("deltaMsg").textContent =
+    r.deltaW > 0 ? "黄牛提高了社会福利" : r.deltaW < 0 ? "黄牛降低了社会福利" : "福利无变化";
+  document.getElementById("deltaMsg").style.color = dColor;
+}
+
+function bindSlider(id, valId, key, onChange) {
+  const el = document.getElementById(id);
+  const vel = document.getElementById(valId);
+  el.addEventListener("input", () => {
+    let v = Number(el.value);
+    if (onChange) v = onChange(v);
+    state[key] = v;
+    el.value = v;
+    vel.textContent = v;
+    if (key === "N") { document.getElementById("sK").max = v - 1; if (state.K >= v) { state.K = v - 1; document.getElementById("sK").value = state.K; document.getElementById("vK").textContent = state.K; } }
+    if (key === "K") { document.getElementById("sN").min = v + 1; if (state.N <= v) { state.N = v + 1; document.getElementById("sN").value = state.N; document.getElementById("vN").textContent = state.N; } }
+    renderAll();
+  });
+}
+
+bindSlider("sN", "vN", "N", v => Math.max(state.K + 1, v));
+bindSlider("sK", "vK", "K", v => Math.min(state.N - 1, Math.max(1, v)));
+bindSlider("sThL", "vThL", "thL");
+bindSlider("sThH", "vThH", "thH", v => Math.max(state.thL + 1, v));
+bindSlider("sCL", "vCL", "cL");
+bindSlider("sCH", "vCH", "cH", v => Math.max(state.cL + 1, v));
+bindSlider("sCS", "vCS", "cs");
+bindSlider("sPLL", "vPLL", "pLL");
+bindSlider("sPLH", "vPLH", "pLH");
+bindSlider("sPHL", "vPHL", "pHL");
+bindSlider("sPHH", "vPHH", "pHH");
+
+renderAll();
+</script>
+</body>
+</html>
