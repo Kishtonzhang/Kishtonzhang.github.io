@@ -36,6 +36,8 @@ h1{font-size:24px;margin-bottom:8px}h2{font-size:18px;margin-bottom:8px;font-wei
 .delta-box{text-align:center;padding:20px 28px;border-radius:8px;margin-top:10px}
 .delta-big{font-size:32px;font-weight:700;margin-top:6px}
 .type-note{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.callout{padding:12px 14px;border-radius:var(--radius);display:flex;gap:10px;align-items:flex-start}
+.callout-info{background:#eff6ff;border:1px solid #bfdbfe}
 @media(max-width:768px){.two-col,.stat-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -45,7 +47,13 @@ h1{font-size:24px;margin-bottom:8px}h2{font-size:18px;margin-bottom:8px;font-wei
 <div>
   <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px"><a href="/toys/" style="color:var(--accent);text-decoration:none">← Toys</a></p>
   <h1>排队黄牛市场模拟 — Scalpers in the Queue</h1>
-  <p style="color:var(--text-secondary);font-size:14px">制度 A（纯 FCFS 排队）vs 制度 B（FCFS + 黄牛）。拖动滑块调节参数，观察 ΔW 如何变号。</p>
+  <div class="callout callout-info" style="margin-top:12px">
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
+      <p style="margin-bottom:8px">当热门餐厅采用先到先服务（FCFS）排队分配座位时，职业黄牛会抢占前排位置，再转售给对餐食估值更高的顾客——这确实能把稀缺座位导向估值更高的人，但黄牛本身也要占用排队位置，从而加剧全体顾客的拥堵。</p>
+      <p style="margin-bottom:8px">本交互模拟对比制度 A（纯 FCFS）与制度 B（FCFS + 利润最大化黄牛）。拖动下方滑块，调节顾客异质性、队列容量与黄牛占位成本，观察净福利效应如何分解为<strong>配置改善</strong>减去<strong>拥堵放大</strong>，以及 ΔW 的符号如何随参数翻转。</p>
+      <p>黄牛对市场福利的影响，并不存在一刀切的答案。</p>
+    </div>
+  </div>
 </div>
 
 <div class="divider"></div>
