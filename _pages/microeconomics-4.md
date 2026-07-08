@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Microeconomics_4"
+title: "micro4"
 permalink: /notes/microeconomics-4/
 author_profile: true
 ---
