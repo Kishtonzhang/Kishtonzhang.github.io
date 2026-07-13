@@ -7,6 +7,12 @@ author_profile: true
 
 Some interactive toys & simulations I built for fun.
 
+## 卫生间排队模拟
+
+一个带异质服务时间、共享服务位与外生冲击的排队模型。可调整到达率、服务位、类型比例与等待成本，观察平均等待和总体福利的变化。
+
+[打开模拟 →](/toys/toilet-queue/)
+
 ## Scalpers in the Queue: Allocation and Congestion in FCFS Markets
 
 When popular restaurants allocate seats via first-come-first-served queuing, professional scalpers buy early queue positions and resell them to high-valuation diners — reallocating scarce seats toward those who value the meal most, but physically occupying queue capacity and worsening congestion for everyone else. This interactive simulation compares Regime A (pure FCFS) against Regime B (FCFS + a profit-maximizing scalper). Drag the sliders to adjust customer heterogeneity, queue capacity, and scalper holding costs, and watch how the net welfare effect decomposes into an **allocative gain** minus **congestion amplification** — with the sign of ΔW flipping depending on parameters. There is no one-size-fits-all verdict on scalpers.

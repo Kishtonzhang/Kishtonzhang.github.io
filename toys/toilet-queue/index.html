@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Toilet Queue</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}.distribution{max-width:736px;margin:24px auto 32px;color:light-dark(rgb(26 28 31),rgb(255 255 255));font-family:system-ui,sans-serif}.distribution h2{margin:0 0 6px;font-size:18px;font-weight:500}.distribution p{margin:0 0 16px;color:light-dark(rgb(90 95 102),rgb(185 185 185));font-size:13px}.dist-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.dist-chart{min-width:0}.dist-chart h3{margin:0 0 4px;font-size:14px;font-weight:500}.dist-chart svg{display:block;width:100%;height:auto;overflow:visible}.axis{stroke:light-dark(rgb(130 135 140),rgb(170 170 170));stroke-width:1}.curve-a1{fill:none;stroke:#339cff;stroke-width:2.5}.curve-a2{fill:none;stroke:#5dc977;stroke-width:2.5}.curve-b1{fill:none;stroke:#f3883b;stroke-width:2.5;stroke-dasharray:5 3}.curve-b{fill:none;stroke:#9b79ec;stroke-width:2.5}.curve-m{fill:none;stroke:#339cff;stroke-width:2.5}.curve-w{fill:none;stroke:#f3883b;stroke-width:2.5}.tick{fill:light-dark(rgb(90 95 102),rgb(185 185 185));font:11px system-ui,sans-serif}.legend{font:12px system-ui,sans-serif;fill:light-dark(rgb(26 28 31),rgb(255 255 255))}@media(max-width:600px){.dist-grid{grid-template-columns:1fr}.distribution{margin-top:20px}}</style>
+<style>
+body{padding:24px;letter-spacing:.005em}iframe{max-width:880px;height:min(920px,calc(100vh - 48px));border-top:2px solid light-dark(rgb(26 28 31),rgb(245 245 245));border-bottom:1px solid light-dark(rgb(205 210 216),rgb(70 70 70))}.distribution{max-width:880px;margin:36px auto 48px;padding-top:20px;border-top:1px solid light-dark(rgb(205 210 216),rgb(70 70 70));font-family:ui-sans-serif,system-ui,sans-serif}.distribution h2{font-family:Georgia,serif;font-size:25px;font-weight:500;letter-spacing:.01em}.distribution p{max-width:65ch;line-height:1.6}.dist-grid{gap:28px}.dist-chart h3{font-size:14px;font-weight:500}.dist-chart svg{border-top:1px solid light-dark(rgb(225 228 232),rgb(55 55 55));padding-top:8px}.curve-a1,.curve-a2,.curve-b1,.curve-b,.curve-m,.curve-w{transition:d 220ms ease-out}@media(max-width:600px){body{padding:12px}iframe{height:920px}.distribution{margin-top:28px}.dist-grid{gap:24px}}
+</style>
+</head>
+<body>
+<iframe id="sim-frame" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Toilet Queue" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Toilet Queue&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;toilet-queue-sim&quot; class=&quot;toilet-sim&quot;&gt;
+  &lt;style&gt;
+    #toilet-queue-sim { color: var(--foreground); font-size: var(--font-size-base); }
+    #toilet-queue-sim .sim-layout { display:grid; gap:16px; }
+    #toilet-queue-sim .sim-controls { display:grid; grid-template-columns:repeat(3,minmax(105px,1fr)); gap:12px; align-items:end; }
+    #toilet-queue-sim .sim-controls label { display:grid; gap:5px; color:var(--muted-foreground); }
+    #toilet-queue-sim .sim-controls output { color:var(--foreground); font-variant-numeric:tabular-nums; }
+    #toilet-queue-sim .sim-canvas-wrap { position:relative; width:100%; aspect-ratio: 16 / 9.6; min-height:360px; }
+    #toilet-queue-sim canvas { width:100%; height:100%; display:block; }
+    #toilet-queue-sim .sim-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    #toilet-queue-sim .sim-stat { padding:10px 0; }
+    #toilet-queue-sim .sim-stat strong { display:block; font-size:1.45em; font-weight:500; font-variant-numeric:tabular-nums; }
+    #toilet-queue-sim .sim-stat span { color:var(--muted-foreground); }
+    #toilet-queue-sim .sim-note { color:var(--muted-foreground); margin:0; }
+    #toilet-queue-sim .sim-title { margin:0; font-family:Georgia,serif; font-size:clamp(24px,4vw,34px); font-weight:500; letter-spacing:.01em; }
+    #toilet-queue-sim .sim-subtitle { margin:-8px 0 4px; color:var(--muted-foreground); }
+    #toilet-queue-sim .sim-section-label { margin:8px 0 -8px; color:var(--muted-foreground); font-size:.78em; font-weight:500; letter-spacing:.08em; text-transform:uppercase; }
+    #toilet-queue-sim .sim-controls { border-top:1px solid var(--border); padding-top:12px; }
+    #toilet-queue-sim .sim-controls label { min-height:48px; }
+    #toilet-queue-sim .sim-canvas-wrap { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:12px 0; }
+    #toilet-queue-sim .sim-summary { border-bottom:1px solid var(--border); padding-bottom:8px; }
+    #toilet-queue-sim .sim-stat { padding:4px 0 12px; }
+    #toilet-queue-sim .sim-stat + .sim-stat { border-left:1px solid var(--border); padding-left:16px; }
+    #toilet-queue-sim .btn { cursor:pointer; }
+    #toilet-queue-sim .form-range { accent-color:var(--primary); }
+    @media (max-width:620px) { #toilet-queue-sim .sim-controls { grid-template-columns:repeat(2,minmax(120px,1fr)); } #toilet-queue-sim .sim-summary { grid-template-columns:1fr; } #toilet-queue-sim .sim-canvas-wrap { aspect-ratio:1 / 1.4; min-height:420px; } }
+  &lt;/style&gt;
+  &lt;div class=&quot;sim-layout&quot;&gt;
+    &lt;h1 class=&quot;sim-title&quot;&gt;卫生间排队模拟&lt;/h1&gt;
+    &lt;p class=&quot;sim-subtitle&quot;&gt;两类服务池、随机到达与服务时间冲击&lt;/p&gt;
+    &lt;p class=&quot;sim-section-label&quot;&gt;系统参数&lt;/p&gt;
+    &lt;div class=&quot;viz-controls sim-controls&quot; aria-label=&quot;模拟参数&quot;&gt;
+      &lt;label class=&quot;form-label&quot;&gt;男性到达 &lt;output id=&quot;m-rate-out&quot;&gt;8 人/分&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;m-rate&quot; type=&quot;range&quot; min=&quot;3&quot; max=&quot;18&quot; value=&quot;8&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;女性到达 &lt;output id=&quot;w-rate-out&quot;&gt;8 人/分&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;w-rate&quot; type=&quot;range&quot; min=&quot;3&quot; max=&quot;18&quot; value=&quot;8&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;A1 位数 &lt;output id=&quot;a1-out&quot;&gt;4&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;a1&quot; type=&quot;range&quot; min=&quot;1&quot; max=&quot;10&quot; value=&quot;4&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;A2 位数 &lt;output id=&quot;a2-out&quot;&gt;4&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;a2&quot; type=&quot;range&quot; min=&quot;1&quot; max=&quot;10&quot; value=&quot;4&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;B 位数 &lt;output id=&quot;b-out&quot;&gt;6&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;b&quot; type=&quot;range&quot; min=&quot;1&quot; max=&quot;10&quot; value=&quot;6&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;外生类型 1 比例 &lt;output id=&quot;a1-choice-out&quot;&gt;A1/B1 60% · A2/B2 40%&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;a1-choice&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;60&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;使用收益 R &lt;output id=&quot;reward-out&quot;&gt;10 效用&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;reward&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;10&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;等待成本 c &lt;output id=&quot;wait-cost-out&quot;&gt;0.5 效用/秒&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;wait-cost&quot; type=&quot;range&quot; min=&quot;0.1&quot; max=&quot;2&quot; step=&quot;0.1&quot; value=&quot;0.5&quot;&gt;&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;sim-section-label&quot;&gt;运行控制&lt;/p&gt;
+    &lt;div class=&quot;viz-controls sim-controls&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;toggle&quot;&gt;暂停&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;reset&quot;&gt;重新开始&lt;/button&gt;
+      &lt;span class=&quot;viz-badge&quot; id=&quot;clock&quot;&gt;模拟时间 00:00&lt;/span&gt;
+      &lt;span class=&quot;text-muted text-small&quot;&gt;A1 满员时，只有 A2 有空位才立即转入；否则继续等待 A1。&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;sim-section-label&quot;&gt;外生冲击&lt;/p&gt;
+    &lt;div class=&quot;viz-controls sim-controls&quot; aria-label=&quot;外生冲击概率&quot;&gt;
+      &lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; id=&quot;phone-enabled&quot; type=&quot;checkbox&quot;&gt;&lt;span class=&quot;form-check-label&quot;&gt;启用玩手机冲击&lt;/span&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;玩手机概率 &lt;output id=&quot;phone-prob-out&quot;&gt;30%（+60 秒）&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;phone-prob&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;30&quot;&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; id=&quot;menstruation-enabled&quot; type=&quot;checkbox&quot;&gt;&lt;span class=&quot;form-check-label&quot;&gt;启用月经冲击（仅 B）&lt;/span&gt;&lt;/label&gt;
+      &lt;label class=&quot;form-label&quot;&gt;月经概率（仅 B） &lt;output id=&quot;menstruation-prob-out&quot;&gt;20%（+120 秒）&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;menstruation-prob&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; value=&quot;20&quot;&gt;&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sim-canvas-wrap&quot;&gt;&lt;canvas id=&quot;queue-canvas&quot; role=&quot;img&quot; aria-label=&quot;男性使用分开的 A1 与 A2，女性的 B1 与 B2 类型共同使用 B 服务区的动态模拟&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+    &lt;div class=&quot;sim-summary&quot; aria-live=&quot;polite&quot;&gt;
+      &lt;div class=&quot;sim-stat&quot;&gt;&lt;span&gt;男性平均等待（已入服务）&lt;/span&gt;&lt;strong id=&quot;male-wait&quot;&gt;0.0 秒&lt;/strong&gt;&lt;/div&gt;
+      &lt;div class=&quot;sim-stat&quot;&gt;&lt;span&gt;女性平均等待（已入服务）&lt;/span&gt;&lt;strong id=&quot;female-wait&quot;&gt;0.0 秒&lt;/strong&gt;&lt;/div&gt;
+      &lt;div class=&quot;sim-stat&quot;&gt;&lt;span&gt;累计完成 / 总福利（已入服务）&lt;/span&gt;&lt;strong id=&quot;done&quot;&gt;0 / 0 效用&lt;/strong&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;sim-note text-small&quot;&gt;圆点为男性；方块为 B1 女性；菱形为 B2 女性。平均等待仅对已入服务者计算；福利 = R × 已入服务人数 − c × 已实现等待时间。&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+  (() =&gt; {
+    const root = document.getElementById(&#x27;toilet-queue-sim&#x27;);
+    const c = root.querySelector(&#x27;#queue-canvas&#x27;), ctx = c.getContext(&#x27;2d&#x27;);
+    const $ = id =&gt; root.querySelector(&#x27;#&#x27; + id);
+    const inputs = [&#x27;m-rate&#x27;,&#x27;w-rate&#x27;,&#x27;a1&#x27;,&#x27;a2&#x27;,&#x27;b&#x27;,&#x27;a1-choice&#x27;,&#x27;reward&#x27;,&#x27;wait-cost&#x27;].map($);
+    const colors = { ink:&#x27;var(--foreground)&#x27;, muted:&#x27;var(--muted-foreground)&#x27;, line:&#x27;var(--border)&#x27;, male:&#x27;var(--viz-series-1)&#x27;, female:&#x27;var(--viz-series-2)&#x27;, a2:&#x27;var(--viz-series-3)&#x27; };
+    let running = true, t = 0, last = performance.now(), arrivals = {m:0,w:0}, completed = {m:0,w:0}, waitSum = {m:0,w:0};
+    let queues, pools, exits;
+    const rand = () =&gt; Math.random();
+    const exp = mean =&gt; -Math.log(1-rand()) * mean;
+    const normal = (mean, sd, min) =&gt; Math.max(min, mean + sd * Math.sqrt(-2*Math.log(Math.max(rand(),.0001))) * Math.cos(2*Math.PI*rand()));
+    const phoneDelay = () =&gt; $(&#x27;phone-enabled&#x27;).checked &amp;&amp; rand() &lt; +$(&#x27;phone-prob&#x27;).value / 100 ? 60 : 0;
+    const menstrualDelay = () =&gt; $(&#x27;menstruation-enabled&#x27;).checked &amp;&amp; rand() &lt; +$(&#x27;menstruation-prob&#x27;).value / 100 ? 120 : 0;
+    const setup = () =&gt; {
+      queues = { a1:[], a2:[], b:[] };
+      pools = { a1:[], a2:[], b:[] }; exits=[];
+      t=0; arrivals={m:0,w:0}; completed={m:0,w:0}; waitSum={m:0,w:0};
+      nextM=exp(60/+$(&#x27;m-rate&#x27;).value); nextW=exp(60/+$(&#x27;w-rate&#x27;).value);
+    };
+    let nextM, nextW; setup();
+    function addPerson(group, type, sex, service) { queues[group].push({ type, sex, arrived:t, service, id:Math.random() }); arrivals[sex]++; }
+    function arrive(type) {
+      const choosesType1 = rand() &lt; +$(&#x27;a1-choice&#x27;).value / 100;
+      if(type===&#x27;w&#x27;) { addPerson(&#x27;b&#x27;,choosesType1?&#x27;b1&#x27;:&#x27;b2&#x27;,&#x27;w&#x27;,(choosesType1?normal(40,7,20):normal(114,32,20))+phoneDelay()+menstrualDelay()); return; }
+      if(choosesType1 &amp;&amp; pools.a1.length &gt;= +$(&#x27;a1&#x27;).value &amp;&amp; pools.a2.length &lt; +$(&#x27;a2&#x27;).value) addPerson(&#x27;a2&#x27;,&#x27;m&#x27;,&#x27;m&#x27;,normal(42,9,20)+phoneDelay());
+      else if(choosesType1) addPerson(&#x27;a1&#x27;,&#x27;m&#x27;,&#x27;m&#x27;,normal(30,6,15)+phoneDelay());
+      else addPerson(&#x27;a2&#x27;,&#x27;m&#x27;,&#x27;m&#x27;,normal(100,10,25)+phoneDelay());
+    }
+    function serve(group, cap) {
+      const p = pools[group], q=queues[group];
+      for(let i=p.length-1;i&gt;=0;i--) if(p[i].ends&lt;=t) { const x=p[i]; completed[x.sex]++; waitSum[x.sex]+=x.wait; exits.push({type:x.type,group,started:t,until:t+3}); p.splice(i,1); }
+      while(p.length&lt;cap &amp;&amp; q.length) { const x=q.shift(); x.wait=t-x.arrived; x.entered=t; x.ends=t+x.service; p.push(x); }
+    }
+    function tick(dt) {
+      t += dt; exits=exits.filter(x=&gt;x.until&gt;t);
+      while(t&gt;=nextM) { arrive(&#x27;m&#x27;); nextM += exp(60/+$(&#x27;m-rate&#x27;).value); }
+      while(t&gt;=nextW) { arrive(&#x27;w&#x27;); nextW += exp(60/+$(&#x27;w-rate&#x27;).value); }
+      serve(&#x27;a1&#x27;,+$(&#x27;a1&#x27;).value); serve(&#x27;a2&#x27;,+$(&#x27;a2&#x27;).value); serve(&#x27;b&#x27;,+$(&#x27;b&#x27;).value);
+    }
+    function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+    function enteredCount(sex) {
+      return completed[sex]+Object.values(pools).flat().filter(x=&gt;x.sex===sex).length;
+    }
+    function enteredWait(sex) {
+      return waitSum[sex]+Object.values(pools).flat().filter(x=&gt;x.sex===sex).reduce((sum,x)=&gt;sum+x.wait,0);
+    }
+    function averageWait(sex) {
+      const count=enteredCount(sex); return count ? enteredWait(sex)/count : 0;
+    }
+    function socialWelfare() {
+      const entrants=enteredCount(&#x27;m&#x27;)+enteredCount(&#x27;w&#x27;), wait=enteredWait(&#x27;m&#x27;)+enteredWait(&#x27;w&#x27;);
+      return entrants*(+$(&#x27;reward&#x27;).value)-wait*(+$(&#x27;wait-cost&#x27;).value);
+    }
+    function drawPerson(x,y,type,active) {
+      ctx.fillStyle = type===&#x27;m&#x27; ? css(&#x27;--viz-series-1&#x27;) : type===&#x27;b1&#x27; ? css(&#x27;--viz-series-2&#x27;) : css(&#x27;--viz-series-4&#x27;);
+      ctx.strokeStyle = css(&#x27;--foreground&#x27;); ctx.lineWidth=1;
+      ctx.beginPath();
+      if(type===&#x27;m&#x27;) ctx.arc(x,y,7,0,Math.PI*2); else if(type===&#x27;b1&#x27;) { ctx.rect(x-6,y-6,12,12); } else { ctx.moveTo(x,y-8); ctx.lineTo(x+8,y); ctx.lineTo(x,y+8); ctx.lineTo(x-8,y); ctx.closePath(); }
+      ctx.fill(); if(active) ctx.stroke();
+    }
+    function drawPool(key, x,y,w,h, label, cap) {
+      ctx.strokeStyle=css(&#x27;--border&#x27;); ctx.lineWidth=1.5; ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle=css(&#x27;--foreground&#x27;); ctx.font=&#x27;500 14px system-ui&#x27;; ctx.fillText(label+&#x27; · &#x27;+cap+&#x27; 位&#x27;,x,y-9);
+      const columns=cap&gt;6?5:3, spacing=(w-32)/(columns-1), p=pools[key]; for(let i=0;i&lt;cap;i++) { const px=x+16+(i%columns)*spacing, py=y+25+Math.floor(i/columns)*32; ctx.strokeStyle=css(&#x27;--border&#x27;); ctx.strokeRect(px-9,py-9,18,18); if(p[i]) { const entering=Math.min(1,(t-p[i].entered)/2.1), sx=x+18, sy=y+h+32; drawPerson(sx+(px-sx)*entering,sy+(py-sy)*entering,p[i].type,true); } }
+      const q=queues[key]; const max=Math.min(q.length,8); for(let i=0;i&lt;max;i++) drawPerson(x+18+i*21,y+h+32,q[i].type,false);
+      const leaving=exits.filter(e=&gt;e.group===key); leaving.forEach((e,i)=&gt;{ const progress=(t-e.started)/3; drawPerson(x+w-20,y+h+15+progress*25+i*14,e.type,false); });
+      ctx.fillStyle=css(&#x27;--muted-foreground&#x27;); ctx.font=&#x27;12px system-ui&#x27;; ctx.fillText(&#x27;队列 &#x27;+q.length,x,y+h+57); if(leaving.length) ctx.fillText(&#x27;↘ 离开&#x27;,x+w-58,y+h+57);
+    }
+    function render() {
+      const rect=c.getBoundingClientRect(), dpr=devicePixelRatio||1; c.width=rect.width*dpr; c.height=rect.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      const W=rect.width,H=rect.height; ctx.clearRect(0,0,W,H); ctx.fillStyle=css(&#x27;--muted-foreground&#x27;); ctx.font=&#x27;12px system-ui&#x27;; ctx.fillText(&#x27;男厕 A：A1 满员时，仅在 A2 有空位时转入&#x27;,20,25);
+      const gap=24, blockW=Math.min(220,(W-gap*3)/2), blockH=Math.min(92,H*.18), bBlockH=Math.min(86,H*.18);
+      drawPool(&#x27;a1&#x27;,20,60,blockW,blockH,&#x27;A1 · 快速&#x27;,+$(&#x27;a1&#x27;).value);
+      drawPool(&#x27;a2&#x27;,40+blockW,60,blockW,blockH,&#x27;A2 · 常规&#x27;,+$(&#x27;a2&#x27;).value);
+      const bY=H*.65; ctx.fillText(&#x27;女厕 B：B1/B2 共享同一队列与服务位&#x27;,20,bY-24);
+      drawPool(&#x27;b&#x27;,20,bY,Math.min(W-40,blockW*1.8),bBlockH,&#x27;B · B1/B2 共享&#x27;,+$(&#x27;b&#x27;).value);
+      $(&#x27;clock&#x27;).textContent=&#x27;模拟时间 &#x27;+String(Math.floor(t/60)).padStart(2,&#x27;0&#x27;)+&#x27;:&#x27;+String(Math.floor(t%60)).padStart(2,&#x27;0&#x27;);
+      $(&#x27;male-wait&#x27;).textContent=averageWait(&#x27;m&#x27;).toFixed(1)+&#x27; 秒&#x27;; $(&#x27;female-wait&#x27;).textContent=averageWait(&#x27;w&#x27;).toFixed(1)+&#x27; 秒&#x27;; $(&#x27;done&#x27;).textContent=(completed.m+completed.w)+&#x27; / &#x27;+Math.round(socialWelfare())+&#x27; 效用&#x27;;
+    }
+    function loop(now) { const dt=Math.min(.5,(now-last)/1000)*7; last=now; if(running) tick(dt); render(); requestAnimationFrame(loop); }
+    const reportParams = () =&gt; parent.postMessage({type:&#x27;queue-params&#x27;,mRate:+$(&#x27;m-rate&#x27;).value,wRate:+$(&#x27;w-rate&#x27;).value,phoneProb:+$(&#x27;phone-prob&#x27;).value,menstrualProb:+$(&#x27;menstruation-prob&#x27;).value,phoneEnabled:$(&#x27;phone-enabled&#x27;).checked,menstrualEnabled:$(&#x27;menstruation-enabled&#x27;).checked},&#x27;*&#x27;);
+    inputs.forEach(input=&gt;input.addEventListener(&#x27;input&#x27;,()=&gt;{ if(input.id===&#x27;a1-choice&#x27;) { const p=+input.value; $(&#x27;a1-choice-out&#x27;).textContent=&#x27;A1/B1 &#x27;+p+&#x27;% · A2/B2 &#x27;+(100-p)+&#x27;%&#x27;; } else if(input.id===&#x27;reward&#x27;) { $(&#x27;reward-out&#x27;).textContent=input.value+&#x27; 效用&#x27;; } else if(input.id===&#x27;wait-cost&#x27;) { $(&#x27;wait-cost-out&#x27;).textContent=input.value+&#x27; 效用/秒&#x27;; } else { $(input.id+&#x27;-out&#x27;).textContent=(input.id.endsWith(&#x27;rate&#x27;)?input.value+&#x27; 人/分&#x27;:input.value); } reportParams(); }));
+    [$(&#x27;phone-prob&#x27;),$(&#x27;menstruation-prob&#x27;)].forEach(input=&gt;input.addEventListener(&#x27;input&#x27;,()=&gt;{ $(input.id+&#x27;-out&#x27;).textContent=input.value+&#x27;%（+&#x27;+(input.id===&#x27;phone-prob&#x27;?60:120)+&#x27; 秒）&#x27;; reportParams(); }));
+    [$(&#x27;phone-enabled&#x27;),$(&#x27;menstruation-enabled&#x27;)].forEach(input=&gt;input.addEventListener(&#x27;change&#x27;,reportParams));
+    $(&#x27;toggle&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{ running=!running; $(&#x27;toggle&#x27;).textContent=running?&#x27;暂停&#x27;:&#x27;继续&#x27;; });
+    $(&#x27;reset&#x27;).addEventListener(&#x27;click&#x27;,setup); requestAnimationFrame(loop);
+  })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+<section class="distribution" aria-labelledby="dist-title">
+  <h2 id="dist-title">模型变量的分布</h2>
+  <p>到达间隔图会随上方 λ 参数实时更新；服务时间为截断正态近似。B1 和 B2 共享 B 的服务位，但服务时间分布不同。</p>
+  <div class="dist-grid">
+    <div class="dist-chart"><h3 id="m-arrival-title">男性到达间隔（λ = 8 人/分）</h3><svg viewBox="0 0 320 150" role="img" aria-label="男性到达间隔的指数分布"><line class="axis" x1="32" y1="116" x2="306" y2="116"/><line class="axis" x1="32" y1="16" x2="32" y2="116"/><path id="m-arrival-curve" class="curve-m"/><text class="tick" x="30" y="135">0</text><text class="tick" x="156" y="135">10</text><text class="tick" x="284" y="135">20 秒</text><text class="legend" x="42" y="30">短间隔最常见</text></svg></div>
+    <div class="dist-chart"><h3 id="w-arrival-title">女性到达间隔（λ = 8 人/分）</h3><svg viewBox="0 0 320 150" role="img" aria-label="女性到达间隔的指数分布"><line class="axis" x1="32" y1="116" x2="306" y2="116"/><line class="axis" x1="32" y1="16" x2="32" y2="116"/><path id="w-arrival-curve" class="curve-w"/><text class="tick" x="30" y="135">0</text><text class="tick" x="156" y="135">10</text><text class="tick" x="284" y="135">20 秒</text><text class="legend" x="42" y="30">短间隔最常见</text></svg></div>
+    <div class="dist-chart"><h3>A1 与 B1 服务时间</h3><svg viewBox="0 0 320 150" role="img" aria-label="A1 和 B1 服务时间的近似分布"><line class="axis" x1="32" y1="116" x2="306" y2="116"/><path id="a1-service-curve" class="curve-a1"/><path id="b1-service-curve" class="curve-b1"/><text id="a1-service-label" class="legend" x="44" y="26">A1：均值 30 秒</text><text id="b1-service-label" class="legend" x="44" y="46">B1：均值 38 秒</text><text class="tick" x="30" y="135">0</text><text class="tick" x="151" y="135">150</text><text class="tick" x="271" y="135">300 秒</text></svg></div>
+    <div class="dist-chart"><h3>A2 与 B2 服务时间</h3><svg viewBox="0 0 320 150" role="img" aria-label="A2 和 B2 服务时间的近似分布"><line class="axis" x1="32" y1="116" x2="306" y2="116"/><path id="a2-service-curve" class="curve-a2"/><path id="b2-service-curve" class="curve-b"/><text id="a2-service-label" class="legend" x="44" y="26">A2：均值 58 秒</text><text id="b2-service-label" class="legend" x="44" y="46">B2：均值 72 秒，方差更大</text><text class="tick" x="30" y="135">0</text><text class="tick" x="151" y="135">150</text><text class="tick" x="271" y="135">300 秒</text></svg></div>
+  </div>
+</section>
+<script>
+(() => {
+  const frame = document.getElementById('sim-frame');
+  const pathForRate = rate => {
+    const points = [];
+    for (let seconds = 0; seconds <= 20; seconds += 1) {
+      const x = 32 + seconds / 20 * 274;
+      const y = 116 - 92 * Math.exp(-(rate / 60) * seconds);
+      points.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
+    }
+    return `M${points.join(' L')}`;
+  };
+  const updateArrivalCurves = (mRate,wRate) => {
+    document.getElementById('m-arrival-title').textContent = `男性到达间隔（λ = ${mRate} 人/分）`;
+    document.getElementById('w-arrival-title').textContent = `女性到达间隔（λ = ${wRate} 人/分）`;
+    document.getElementById('m-arrival-curve').setAttribute('d', pathForRate(mRate));
+    document.getElementById('w-arrival-curve').setAttribute('d', pathForRate(wRate));
+  };
+  const pathForService = (mean, sd) => {
+    const points = [];
+    for (let seconds = 0; seconds <= 300; seconds += 3) {
+      const x = 32 + seconds / 300 * 274;
+      const y = 116 - 92 * Math.exp(-0.5 * ((seconds - mean) / sd) ** 2);
+      points.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
+    }
+    return `M${points.join(' L')}`;
+  };
+  const updateServiceCurves = (phoneProb=30, menstrualProb=20, phoneEnabled=false, menstrualEnabled=false) => {
+    const p = phoneEnabled ? phoneProb/100 : 0, q = menstrualEnabled ? menstrualProb/100 : 0;
+    const values = { a1:30+60*p, b1:40+60*p+120*q, a2:100+60*p, b2:114+60*p+120*q };
+    const spreads = { a1:Math.sqrt(6**2+p*(1-p)*60**2), b1:Math.sqrt(7**2+p*(1-p)*60**2+q*(1-q)*120**2), a2:Math.sqrt(10**2+p*(1-p)*60**2), b2:Math.sqrt(32**2+p*(1-p)*60**2+q*(1-q)*120**2) };
+    document.getElementById('a1-service-curve').setAttribute('d',pathForService(values.a1,spreads.a1));
+    document.getElementById('b1-service-curve').setAttribute('d',pathForService(values.b1,spreads.b1));
+    document.getElementById('a2-service-curve').setAttribute('d',pathForService(values.a2,spreads.a2));
+    document.getElementById('b2-service-curve').setAttribute('d',pathForService(values.b2,spreads.b2));
+    document.getElementById('a1-service-label').textContent=`A1：均值 ${values.a1.toFixed(1)} 秒`;
+    document.getElementById('b1-service-label').textContent=`B1：均值 ${values.b1.toFixed(1)} 秒`;
+    document.getElementById('a2-service-label').textContent=`A2：均值 ${values.a2.toFixed(1)} 秒`;
+    document.getElementById('b2-service-label').textContent=`B2：均值 ${values.b2.toFixed(1)} 秒，方差更大`;
+  };
+  updateServiceCurves();
+  updateArrivalCurves(8,8);
+  window.addEventListener('message', event => {
+    if (event.source !== frame.contentWindow || event.data?.type !== 'queue-params') return;
+    const { mRate, wRate, phoneProb, menstrualProb, phoneEnabled, menstrualEnabled } = event.data;
+    updateArrivalCurves(mRate,wRate);
+    updateServiceCurves(phoneProb,menstrualProb,phoneEnabled,menstrualEnabled);
+  });
+})();
+</script>
+</body>
+</html>
