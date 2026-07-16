@@ -1,11 +1,19 @@
 ---
 layout: single
-title: "Toys"
+title: "雑貨"
 permalink: /toys/
 author_profile: true
 ---
 
 Some interactive toys & simulations I built for fun.
+
+## Critical-level Sufficientarianism
+
+Slides for Critical-level Sufficientarianism.
+
+[View Slides →](/files/slides/critical-level-sufficientarianism.pdf)
+
+Bossert, W., Cato, S. and Kamaga, K. (2022), [Critical-level Sufficientarianism*](https://onlinelibrary.wiley.com/doi/full/10.1111/jopp.12267#jopp12267-note-0001). *Journal of Political Philosophy*, 30: 434-461. [https://doi.org/10.1111/jopp.12267](https://doi.org/10.1111/jopp.12267).
 
 ## 卫生间排队模拟
 

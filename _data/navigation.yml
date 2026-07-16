@@ -9,7 +9,6 @@
 main:
   - title: "Notes"
     url: /notes/
-  - title: "Toys"
+  - title: "雑貨"
     url: /toys/
-
 
