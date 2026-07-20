@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M/M/1 Queue Simulation — Naor (1969)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #555;
+    --border: #e0e0e0;
+    --accent: #4f6ef7;
+    --accent-hover: #3d5bd9;
+    --server-color: #f59e0b;
+    --queue-color: #60a5fa;
+    --balk-color: #ef4444;
+    --arrival-color: #10b981;
+    --departure-color: #8b5cf6;
+    --slider-track: #d1d5db;
+    --slider-fill: #4f6ef7;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .top-bar h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .top-bar h1 span { font-weight: 400; color: var(--text-secondary); font-size: 14px; }
+  .top-bar .speed-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .top-bar .speed-group input[type="range"] { width: 100px; }
+  .top-bar .speed-group .speed-label {
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 32px;
+    text-align: center;
+  }
+  
+  /* Main Layout */
+  .main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+  }
+  .sidebar h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+  
+  .param-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .param-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .param-group label .param-name { color: var(--text); }
+  .param-group label .param-value {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 36px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .param-group .param-desc {
+    font-size: 11px;
+    color: #888;
+    line-height: 1.3;
+  }
+  .param-group input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--slider-track);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .param-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  
+  /* Queue Mode */
+  .mode-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mode-group .mode-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+  .mode-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .mode-option:hover { background: #f3f4f6; }
+  .mode-option.active { background: #eef2ff; font-weight: 600; }
+  .mode-option input[type="radio"] { accent-color: var(--accent); }
+  .mode-option .mode-n { font-weight: 700; color: var(--accent); margin-left: auto; }
+  
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2px 0;
+  }
+  
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-reset {
+    background: #f3f4f6;
+    color: var(--text);
+    width: 100%;
+  }
+  .btn-reset:hover { background: #e5e7eb; }
+  .btn-default {
+    background: #eef2ff;
+    color: var(--accent);
+    width: 100%;
+  }
+  .btn-default:hover { background: #dde4ff; }
+  
+  /* Canvas Area */
+  .canvas-container {
+    flex: 1;
+    position: relative;
+    background: #fafbfc;
+    min-width: 0;
+  }
+  .canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Stats Panel */
+  .stats-panel {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-left: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    font-size: 12px;
+  }
+  .stats-panel h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 3px 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .stat-row .stat-label { color: var(--text-secondary); }
+  .stat-row .stat-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat-row .stat-val.highlight { color: var(--accent); }
+  
+  .prob-bars { display: flex; flex-direction: column; gap: 3px; }
+  .prob-bar-row { display: flex; align-items: center; gap: 6px; }
+  .prob-bar-row .pi-label { width: 28px; font-size: 11px; text-align: right; color: var(--text-secondary); }
+  .prob-bar-row .pi-bar-bg { flex: 1; height: 14px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+  .prob-bar-row .pi-bar-fill { height: 100%; background: linear-gradient(90deg, #a5b4fc, var(--accent)); border-radius: 3px; transition: width 0.3s; }
+  .prob-bar-row .pi-val { width: 36px; font-size: 11px; text-align: left; font-variant-numeric: tabular-nums; }
+  
+  /* Responsive: stack on small screens */
+  @media (max-width: 900px) {
+    .main { flex-direction: column; }
+    .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px; }
+    .sidebar > * { flex: 1; min-width: 120px; }
+    .stats-panel { width: 100%; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px; }
+    .canvas-container { height: 50vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>M/M/1 Queue Simulation <span>— Naor (1969) "The Regulation of Queue Size by Levying Tolls"</span></h1>
+  <div class="speed-group">
+    Speed:
+    <input type="range" id="speed" min="0.25" max="5" step="0.25" value="1">
+    <span class="speed-label" id="speedLabel">1×</span>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Parameters</h3>
+    
+    <div class="param-group">
+      <label>
+        <span class="param-name">λ — Arrival rate</span>
+        <span class="param-value" id="lambdaVal">0.95</span>
+      </label>
+      <input type="range" id="lambda" min="0.1" max="3" step="0.01" value="0.95">
+      <span class="param-desc">Poisson arrivals; mean inter‑arrival = 1/λ</span>
+    </div>
+    
+    <div class="param-group">
+      <label>
+        <span class="param-name">μ — Service rate</span>
+        <span class="param-value" id="muVal">1.00</span>
+      </label>
+      <input type="range" id="mu" min="0.1" max="3" step="0.01" value="1.0">
+      <span class="param-desc">Exp(μ) service time; mean = 1/μ</span>
+    </div>
+    
+    <div class="param-group">
+      <label>
+        <span class="param-name">R — Service reward</span>
+        <span class="param-value" id="rVal">10.00</span>
+      </label>
+      <input type="range" id="R" min="1" max="30" step="0.1" value="10">
+      <span class="param-desc">Payoff per completed service</span>
+    </div>
+    
+    <div class="param-group">
+      <label>
+        <span class="param-name">C — Waiting cost/unit time</span>
+        <span class="param-value" id="cVal">1.00</span>
+      </label>
+      <input type="range" id="C" min="0.1" max="10" step="0.01" value="1">
+      <span class="param-desc">Cost incurred while queueing or being served</span>
+    </div>
+    
+    <hr class="divider">
+    
+    <div class="mode-group">
+      <span class="mode-title">Queue Size Regime</span>
+      <label class="mode-option active" id="modeIndividual">
+        <input type="radio" name="mode" value="individual" checked>
+        Individual optimal n<sub>s</sub>
+        <span class="mode-n" id="nsVal">—</span>
+      </label>
+      <label class="mode-option" id="modeSocial">
+        <input type="radio" name="mode" value="social">
+        Social optimal n<sub>0</sub>
+        <span class="mode-n" id="n0Val">—</span>
+      </label>
+      <label class="mode-option" id="modeRevenue">
+        <input type="radio" name="mode" value="revenue">
+        Revenue-maximizing n<sub>r</sub>
+        <span class="mode-n" id="nrVal">—</span>
+      </label>
+      <label class="mode-option" id="modeManual">
+        <input type="radio" name="mode" value="manual">
+        Manual n
+        <span class="mode-n"><input type="number" id="manualN" min="1" max="30" value="5" style="width:44px;text-align:center;font-size:12px;border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;"></span>
+      </label>
+    </div>
+    
+    <button class="btn btn-default" id="btnDefault">★ Default Settings</button>
+    <button class="btn btn-reset" id="btnReset">↻ Reset Simulation</button>
+  </div>
+  
+  <!-- Canvas -->
+  <div class="canvas-container" id="canvasContainer">
+    <canvas id="canvas"></canvas>
+  </div>
+  
+  <!-- Stats Panel -->
+  <div class="stats-panel" id="statsPanel">
+    <h3>Simulation Stats</h3>
+    <div class="stat-row"><span class="stat-label">Sim time</span><span class="stat-val" id="statTime">0.00</span></div>
+    <div class="stat-row"><span class="stat-label">System size (L)</span><span class="stat-val highlight" id="statSysSize">0</span></div>
+    <div class="stat-row"><span class="stat-label">ρ = λ/μ</span><span class="stat-val" id="statRho">0.80</span></div>
+    <div class="stat-row"><span class="stat-label">Arrivals (total)</span><span class="stat-val" id="statArrivals">0</span></div>
+    <div class="stat-row"><span class="stat-label">Accepted</span><span class="stat-val" id="statAccepted">0</span></div>
+    <div class="stat-row"><span class="stat-label">Balked (rejected)</span><span class="stat-val" id="statBalked">0</span></div>
+    <div class="stat-row"><span class="stat-label">Completed</span><span class="stat-val" id="statCompleted">0</span></div>
+    
+    <hr class="divider">
+    <h3>Steady-State (theoretical)</h3>
+    <div class="stat-row"><span class="stat-label">E[L] (expected size)</span><span class="stat-val highlight" id="statEL">—</span></div>
+    <div class="stat-row"><span class="stat-label">p₀ (idle prob)</span><span class="stat-val" id="statP0">—</span></div>
+    <div class="stat-row"><span class="stat-label">Busy fraction b</span><span class="stat-val" id="statBusy">—</span></div>
+    <div class="stat-row"><span class="stat-label">λₑ (effective arrival)</span><span class="stat-val" id="statLambdaE">—</span></div>
+    <div class="stat-row"><span class="stat-label">Net benefit P</span><span class="stat-val highlight" id="statP">—</span></div>
+    
+    <hr class="divider">
+    <h3>State Probabilities pᵢ</h3>
+    <div class="prob-bars" id="probBars"></div>
+    
+    <hr class="divider">
+    <h3>Optimal Toll θ*</h3>
+    <div class="stat-row"><span class="stat-label">θ* upper bound</span><span class="stat-val highlight" id="statThetaU">—</span></div>
+    <div class="stat-row"><span class="stat-label">θ* lower bound</span><span class="stat-val highlight" id="statThetaL">—</span></div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// M/M/1/n Queue Simulation — Naor (1969)
+// ============================================================================
+
+    // --- RoundRect polyfill for older browsers ---
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (typeof r === 'number') r = {tl: r, tr: r, br: r, bl: r};
+        this.moveTo(x + r.tl, y); this.lineTo(x + w - r.tr, y); this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+        this.lineTo(x + w, y + h - r.br); this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+        this.lineTo(x + r.bl, y + h); this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+        this.lineTo(x, y + r.tl); this.quadraticCurveTo(x, y, x + r.tl, y); this.closePath();
+      };
+    }
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const container = document.getElementById('canvasContainer');
+
+// --- Resize handling ---
+function resize() {
+  const rect = container.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+}
+window.addEventListener('resize', resize);
+resize();
+
+// --- Simulation State ---
+let simTime = 0;
+let speed = 1.0;
+let nextArrivalTime = 0;
+let serviceEndTime = 0; // 0 = idle
+let queue = []; // customers waiting (not being served)
+let servingCustomer = null;
+let totalArrivals = 0;
+let totalAccepted = 0;
+let totalBalked = 0;
+let totalCompleted = 0;
+let visualEffects = []; // for animations
+let departingCustomers = []; // customers animating off-screen (arrive/balk/depart particles)
+
+// Current parameters
+let lambda = 0.95;
+let mu = 1.0;
+let R = 10.0;
+let C = 1.0;
+let n = 8; // current max queue size
+let mode = 'individual';
+
+const customerColors = [
+  '#4f6ef7', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6',
+  '#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#6366f1',
+  '#e11d48', '#0ea5e9', '#d946ef', '#84cc16', '#64748b'
+];
+let customerIdCounter = 0;
+
+function schArrival() {
+  nextArrivalTime = simTime + (-Math.log(Math.random()) / lambda);
+}
+
+function startService(cust) {
+  servingCustomer = cust;
+  cust.serviceTime = -Math.log(Math.random()) / mu;
+  serviceEndTime = simTime + cust.serviceTime;
+}
+
+const DEFAULTS = { lambda: 0.95, mu: 1.0, R: 10.0, C: 1.0, speed: 1.0, mode: 'individual' };
+
+function applyDefaults() {
+  lambda = DEFAULTS.lambda; mu = DEFAULTS.mu; R = DEFAULTS.R; C = DEFAULTS.C;
+  speed = DEFAULTS.speed; mode = DEFAULTS.mode;
+  document.getElementById('lambda').value = lambda;
+  document.getElementById('lambdaVal').textContent = lambda.toFixed(2);
+  document.getElementById('mu').value = mu;
+  document.getElementById('muVal').textContent = mu.toFixed(2);
+  document.getElementById('R').value = R;
+  document.getElementById('rVal').textContent = R.toFixed(2);
+  document.getElementById('C').value = C;
+  document.getElementById('cVal').textContent = C.toFixed(2);
+  document.getElementById('speed').value = speed;
+  document.getElementById('speedLabel').textContent = speed + '×';
+  document.querySelector('input[name="mode"][value="individual"]').checked = true;
+  updateModeUI();
+  n = getEffectiveN();
+}
+
+function resetSim() {
+  simTime = 0;
+  nextArrivalTime = 0;
+  serviceEndTime = 0;
+  queue = [];
+  servingCustomer = null;
+  totalArrivals = 0;
+  totalAccepted = 0;
+  totalBalked = 0;
+  totalCompleted = 0;
+  visualEffects = [];
+  departingCustomers = [];
+  customerIdCounter = 0;
+  schArrival();
+}
+
+function getEffectiveN() {
+  switch (mode) {
+    case 'individual': return calcNS();
+    case 'social': return calcN0();
+    case 'revenue': return calcNR();
+    case 'manual': return parseInt(document.getElementById('manualN').value) || 5;
+    default: return 5;
+  }
+}
+
+function calcNS() {
+  const vs = R * mu / C;
+  return Math.max(1, Math.floor(vs));
+}
+
+function calcN0() {
+  const rho = lambda / mu;
+  const ns = calcNS();
+  let bestN = 1, bestP = -Infinity;
+  // Search up to ns + 5
+  for (let i = 1; i <= Math.max(ns + 5, 10); i++) {
+    const pval = calcP(i);
+    if (pval > bestP) { bestP = pval; bestN = i; }
+  }
+  return bestN;
+}
+
+function calcNR() {
+  const rho = lambda / mu;
+  const ns = calcNS();
+  let bestN = 1, bestM = -Infinity;
+  for (let i = 1; i <= Math.max(ns + 5, 10); i++) {
+    const mval = calcM(i);
+    if (mval > bestM) { bestM = mval; bestN = i; }
+  }
+  return bestN;
+}
+
+function calcP(nVal) {
+  const rho = lambda / mu;
+  if (Math.abs(rho - 1) < 1e-10) return calcPLimit(nVal);
+  const rhon1 = Math.pow(rho, nVal + 1);
+  const rhon = Math.pow(rho, nVal);
+  const pn = (1 - rho) * rhon / (1 - rhon1);
+  const q = rho / (1 - rho) - (nVal + 1) * rhon1 / (1 - rhon1);
+  return lambda * (1 - pn) * R - C * q;
+}
+
+function calcPLimit(nVal) {
+  // rho = 1
+  const q = nVal / 2;
+  const pn = 1 / (nVal + 1);
+  return lambda * (1 - pn) * R - C * q;
+}
+
+function calcM(nVal) {
+  const rho = lambda / mu;
+  if (Math.abs(rho - 1) < 1e-10) {
+    const pn = 1 / (nVal + 1);
+    const theta = R - (nVal + 1) * C / mu;
+    return theta * lambda * (1 - pn);
+  }
+  const rhon = Math.pow(rho, nVal);
+  const rhon1 = Math.pow(rho, nVal + 1);
+  const pn = (1 - rho) * rhon / (1 - rhon1);
+  const theta = R - (nVal + 1) * C / mu;
+  return theta * lambda * (1 - pn);
+}
+
+function steadyStateStats(nVal) {
+  const rho = lambda / mu;
+  let p = [], el, p0, b, lambdaE, Pval;
+  if (Math.abs(rho - 1) < 1e-10) {
+    // rho = 1
+    p0 = 1 / (nVal + 1);
+    for (let i = 0; i <= nVal; i++) p[i] = p0;
+    el = nVal / 2;
+    b = 1 - p0;
+    lambdaE = lambda * (1 - 1/(nVal + 1));
+    Pval = lambdaE * R - C * el;
+  } else {
+    const rhon1 = Math.pow(rho, nVal + 1);
+    p0 = (1 - rho) / (1 - rhon1);
+    for (let i = 0; i <= nVal; i++) p[i] = p0 * Math.pow(rho, i);
+    el = rho / (1 - rho) - (nVal + 1) * rhon1 / (1 - rhon1);
+    b = 1 - p0;
+    lambdaE = lambda * (1 - p[nVal]);
+    Pval = lambdaE * R - C * el;
+  }
+  return { p, el, p0, b, lambdaE, Pval };
+}
+
+// --- Advance simulation ---
+function advance(dt) {
+  const realDt = dt * speed;
+  simTime += realDt;
+  
+  // Process arrivals
+  while (nextArrivalTime <= simTime) {
+    totalArrivals++;
+    const effN = getEffectiveN();
+    n = effN;
+    const currentSize = (servingCustomer ? 1 : 0) + queue.length;
+    
+    if (currentSize < n) {
+      // Accept
+      totalAccepted++;
+      const cust = {
+        id: ++customerIdCounter,
+        arrivalTime: nextArrivalTime,
+        color: customerColors[(customerIdCounter - 1) % customerColors.length],
+        serviceTime: 0,
+        animX: -50, // start off-screen left
+        animY: 0,
+        targetX: 0,
+        targetY: 0,
+        state: 'queuing' // queuing | serving | departing | balked
+      };
+      if (servingCustomer === null) {
+        startService(cust);
+        cust.state = 'serving';
+      } else {
+        queue.push(cust);
+      }
+      visualEffects.push({
+        type: 'arrival',
+        x: 0, y: 0,
+        lifetime: 1.0,
+        age: 0,
+        color: '#10b981'
+      });
+    } else {
+      // Balk
+      totalBalked++;
+      visualEffects.push({
+        type: 'balk',
+        x: 0, y: 0,
+        lifetime: 0.8,
+        age: 0
+      });
+    }
+    schArrival();
+  }
+  
+  // Process service completions
+  while (serviceEndTime > 0 && serviceEndTime <= simTime && servingCustomer) {
+    totalCompleted++;
+    const finished = servingCustomer;
+    finished.state = 'departing';
+    finished.departTime = serviceEndTime;
+    visualEffects.push({
+      type: 'departure',
+      x: 0, y: 0,
+      lifetime: 0.6,
+      age: 0,
+      color: '#8b5cf6'
+    });
+    
+    // Track for departure animation
+    finished.visualX = finished.visualX || (0); // will be set in render
+    finished.visualY = finished.visualY || (0);
+    departingCustomers.push(finished);
+    
+    // Remove from serving and start next in queue
+    servingCustomer = null;
+    if (queue.length > 0) {
+      const next = queue.shift();
+      startService(next);
+      next.state = 'serving';
+    } else {
+      serviceEndTime = 0;
+    }
+  }
+  
+  // Process departing customers (remove from visual after animation)
+  // We handle this in render by filtering
+  
+  // Update visual effects
+  visualEffects = visualEffects.filter(e => {
+    e.age += realDt;
+    return e.age < e.lifetime;
+  });
+}
+
+// --- Render ---
+function render() {
+  const rect = container.getBoundingClientRect();
+  const W = rect.width;
+  const H = rect.height;
+  ctx.clearRect(0, 0, W, H);
+  
+  if (W < 400 || H < 200) return;
+  
+  // --- Layout constants ---
+  const serverW = 100, serverH = 80;
+  const slotW = 60, slotH = 48;
+  const slotGap = 8;
+  const serverX = W - serverW - 60;
+  const serverY = H / 2 - serverH / 2;
+  const maxVisibleSlots = Math.max(1, Math.min(n, Math.floor((serverX - 80) / (slotW + slotGap))));
+  
+  // --- Draw background ---
+  ctx.fillStyle = '#fafbfc';
+  ctx.fillRect(0, 0, W, H);
+  
+  // --- Draw title area ---
+  ctx.fillStyle = '#e5e7eb';
+  ctx.fillRect(0, 0, W, 2);
+  
+  // --- Draw entrance label ---
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '12px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Arrivals →', 50, H / 2 - 5);
+  
+  // Arrow
+  ctx.beginPath();
+  ctx.moveTo(70, H / 2 + 5);
+  ctx.lineTo(90, H / 2 + 5);
+  ctx.strokeStyle = '#d1d5db';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  // --- Draw queue slots ---
+  const queueStartX = 100;
+  
+  for (let i = 0; i < maxVisibleSlots; i++) {
+    const sx = queueStartX + i * (slotW + slotGap);
+    const sy = H / 2 - slotH / 2;
+    
+    ctx.fillStyle = '#f3f4f6';
+    ctx.strokeStyle = '#d1d5db';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.roundRect(sx, sy, slotW, slotH, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Slot label
+    ctx.fillStyle = '#c4c4c4';
+    ctx.font = 'bold 11px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(i + 1, sx + slotW / 2, sy - 6);
+  }
+  
+  // --- Draw server ---
+  const sx = serverX;
+  const sy = serverY;
+  
+  // Server glow
+  const glowGrad = ctx.createRadialGradient(sx + serverW/2, sy + serverH/2, serverW/3, sx + serverW/2, sy + serverH/2, serverW);
+  glowGrad.addColorStop(0, 'rgba(245, 158, 11, 0.15)');
+  glowGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+  ctx.fillStyle = glowGrad;
+  ctx.fillRect(sx - 30, sy - 30, serverW + 60, serverH + 60);
+  
+  ctx.fillStyle = servingCustomer ? '#fef3c7' : '#fff';
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.roundRect(sx, sy, serverW, serverH, 10);
+  ctx.fill();
+  ctx.stroke();
+  
+  // Server label
+  ctx.fillStyle = '#b45309';
+  ctx.font = 'bold 12px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SERVER', sx + serverW / 2, sy - 6);
+  
+  // --- Clean up departed customers that are off-screen ---
+  for (let i = departingCustomers.length - 1; i >= 0; i--) {
+    if (departingCustomers[i].visualX > W + 60) departingCustomers.splice(i, 1);
+  }
+  
+  // --- Draw customers ---
+  const allCustomers = [];
+  if (servingCustomer) allCustomers.push(servingCustomer);
+  allCustomers.push(...queue);
+  
+  // Assign visual positions
+  // Server position
+  if (servingCustomer) {
+    servingCustomer.visualX = lerp(servingCustomer.visualX || serverX + serverW/2, serverX + serverW/2, 0.15);
+    servingCustomer.visualY = lerp(servingCustomer.visualY || serverY + serverH/2, serverY + serverH/2, 0.15);
+  }
+  
+  // Queue positions
+  for (let i = 0; i < queue.length; i++) {
+    const cx = queueStartX + i * (slotW + slotGap) + slotW / 2;
+    if (i < maxVisibleSlots) {
+      const cy = H / 2;
+      queue[i].visualX = lerp(queue[i].visualX || cx, cx, 0.15);
+      queue[i].visualY = lerp(queue[i].visualY || cy, cy, 0.15);
+    }
+  }
+  
+  // Draw customers
+  for (const cust of allCustomers) {
+    if (cust.state === 'departing') continue; // drawn separately below
+    if (!cust.visualX) continue;
+    
+    const cx = cust.visualX;
+    const cy = cust.visualY;
+    const r = 17;
+    
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.beginPath();
+    ctx.arc(cx + 2, cy + 2, r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Circle
+    ctx.fillStyle = cust.color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    
+    // ID
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 10px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(cust.id, cx, cy);
+  }
+  
+  // --- Draw balked customers ---
+  for (const eff of visualEffects) {
+    if (eff.type === 'balk') {
+      const progress = eff.age / eff.lifetime;
+      const alpha = 1 - progress;
+      const bx = 80;
+      const by = H / 2 - 50 - 60 * progress;
+      
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#ef4444';
+      ctx.font = '13px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✕ BALK', bx, by);
+      ctx.globalAlpha = 1;
+    }
+    if (eff.type === 'arrival') {
+      const progress = eff.age / eff.lifetime;
+      const alpha = Math.max(0, 1 - progress);
+      const ax = 20 + (queueStartX - 20) * Math.min(progress/0.5, 1);
+      const ay = H / 2;
+      
+      ctx.globalAlpha = alpha * 0.6;
+      ctx.fillStyle = eff.color;
+      ctx.beginPath();
+      ctx.arc(ax, ay, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    if (eff.type === 'departure') {
+      const progress = eff.age / eff.lifetime;
+      const alpha = Math.max(0, 1 - progress);
+      const dx = serverX + serverW/2 + progress * 100;
+      const dy = serverY + serverH/2;
+      
+      ctx.globalAlpha = alpha * 0.6;
+      ctx.fillStyle = eff.color;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+  
+  // --- Draw departing customers ---
+  for (const dc of departingCustomers) {
+    dc.visualX = lerp(dc.visualX || serverX + serverW/2 + 20, W + 60, 0.04);
+    dc.visualY = lerp(dc.visualY || serverY + serverH/2, serverY + serverH/2, 0.04);
+    if (dc.visualX > W + 50) continue;
+    
+    ctx.globalAlpha = 0.75;
+    ctx.fillStyle = dc.color;
+    ctx.beginPath();
+    ctx.arc(dc.visualX, dc.visualY, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('✓', dc.visualX, dc.visualY);
+    ctx.globalAlpha = 1;
+  }
+  
+  // --- Draw "Exit →" label ---
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '12px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('→ Exit', serverX + serverW + 40, H / 2);
+  
+  // --- Bottom info bar ---
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '11px -apple-system, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('λ = ' + lambda.toFixed(2) + ' | μ = ' + mu.toFixed(2) + ' | ρ = ' + (lambda/mu).toFixed(2) + ' | n_s = ' + calcNS() + ' | n_0 = ' + calcN0(), 12, H - 14);
+  
+  // --- Capacity indicator ---
+  if (maxVisibleSlots > 0) {
+    const indicatorX = queueStartX + maxVisibleSlots * (slotW + slotGap);
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.moveTo(indicatorX - 2, H/2 - 40);
+    ctx.lineTo(indicatorX - 2, H/2 + 40);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#b45309';
+    ctx.font = '10px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`max n=${n}`, indicatorX - 2, H/2 - 44);
+  }
+}
+
+function lerp(a, b, t) {
+  if (a === undefined || a === null) return b;
+  return a + (b - a) * t;
+}
+
+// --- Stats Updater ---
+function updateStats() {
+  const effN = getEffectiveN();
+  n = effN;
+  
+  document.getElementById('statTime').textContent = simTime.toFixed(2);
+  document.getElementById('statSysSize').textContent = (servingCustomer ? 1 : 0) + queue.length;
+  document.getElementById('statRho').textContent = (lambda / mu).toFixed(2);
+  document.getElementById('statArrivals').textContent = totalArrivals;
+  document.getElementById('statAccepted').textContent = totalAccepted;
+  document.getElementById('statBalked').textContent = totalBalked;
+  document.getElementById('statCompleted').textContent = totalCompleted;
+  
+  // Steady-state
+  const ss = steadyStateStats(n);
+  document.getElementById('statEL').textContent = ss.el.toFixed(3);
+  document.getElementById('statP0').textContent = ss.p0.toFixed(3);
+  document.getElementById('statBusy').textContent = (ss.b * 100).toFixed(1) + '%';
+  document.getElementById('statLambdaE').textContent = ss.lambdaE.toFixed(3) + ' (' + (ss.lambdaE/lambda*100).toFixed(0) + '%)';
+  document.getElementById('statP').textContent = ss.Pval.toFixed(3);
+  
+  // Optimal toll
+  const n0 = calcN0();
+  const thetaU = R - n0 * C / mu;
+  const thetaL = R - (n0 + 1) * C / mu;
+  document.getElementById('statThetaU').textContent = thetaU.toFixed(2);
+  document.getElementById('statThetaL').textContent = thetaL.toFixed(2);
+  
+  // n values
+  document.getElementById('nsVal').textContent = calcNS();
+  document.getElementById('n0Val').textContent = n0;
+  document.getElementById('nrVal').textContent = calcNR();
+  
+  // Probability bars
+  const probBars = document.getElementById('probBars');
+  probBars.innerHTML = '';
+  const maxShow = Math.min(n, 12);
+  for (let i = 0; i <= maxShow; i++) {
+    const pi = ss.p[i] || 0;
+    const row = document.createElement('div');
+    row.className = 'prob-bar-row';
+    row.innerHTML = `
+      <span class="pi-label">p${i}</span>
+      <span class="pi-bar-bg"><span class="pi-bar-fill" style="width:${(pi * 100).toFixed(0)}%"></span></span>
+      <span class="pi-val">${pi.toFixed(3)}</span>
+    `;
+    probBars.appendChild(row);
+  }
+}
+
+// --- Mode switching ---
+function updateModeUI() {
+  document.querySelectorAll('.mode-option').forEach(el => el.classList.remove('active'));
+  if (mode === 'individual') document.getElementById('modeIndividual').classList.add('active');
+  if (mode === 'social') document.getElementById('modeSocial').classList.add('active');
+  if (mode === 'revenue') document.getElementById('modeRevenue').classList.add('active');
+  if (mode === 'manual') document.getElementById('modeManual').classList.add('active');
+  
+  // Enable/disable manual input
+  document.getElementById('manualN').disabled = mode !== 'manual';
+}
+
+// --- Main Loop ---
+let lastTime = performance.now();
+let statsTimer = 0;
+
+function loop(timestamp) {
+  const rawDt = (timestamp - lastTime) / 1000;
+  lastTime = timestamp;
+  
+  // Clamp dt to prevent huge jumps
+  const dt = Math.min(rawDt, 0.1);
+  
+  advance(dt);
+  render();
+  
+  statsTimer += dt;
+  if (statsTimer > 0.2) { // Update stats every 200ms
+    statsTimer = 0;
+    updateStats();
+    n = getEffectiveN();
+  }
+  
+  requestAnimationFrame(loop);
+}
+
+// --- Event Listeners ---
+document.getElementById('lambda').addEventListener('input', function() {
+  lambda = parseFloat(this.value);
+  document.getElementById('lambdaVal').textContent = lambda.toFixed(2);
+});
+document.getElementById('mu').addEventListener('input', function() {
+  mu = parseFloat(this.value);
+  document.getElementById('muVal').textContent = mu.toFixed(2);
+});
+document.getElementById('R').addEventListener('input', function() {
+  R = parseFloat(this.value);
+  document.getElementById('rVal').textContent = R.toFixed(2);
+});
+document.getElementById('C').addEventListener('input', function() {
+  C = parseFloat(this.value);
+  document.getElementById('cVal').textContent = C.toFixed(2);
+});
+document.getElementById('speed').addEventListener('input', function() {
+  speed = parseFloat(this.value);
+  document.getElementById('speedLabel').textContent = speed + '×';
+});
+
+document.getElementById('btnDefault').addEventListener('click', function() {
+  applyDefaults();
+  resetSim();
+  updateStats();
+});
+
+document.getElementById('btnReset').addEventListener('click', function() {
+  resetSim();
+  updateStats();
+});
+
+// Mode radio buttons
+document.querySelectorAll('input[name="mode"]').forEach(r => {
+  r.addEventListener('change', function() {
+    if (this.checked) {
+      mode = this.value;
+      updateModeUI();
+      n = getEffectiveN();
+      // Don't reset simulation, just change the cap
+    }
+  });
+});
+
+document.getElementById('manualN').addEventListener('input', function() {
+  if (mode === 'manual') {
+    n = parseInt(this.value) || 1;
+    updateStats();
+  }
+});
+
+// Initialize
+resetSim();
+updateModeUI();
+updateStats();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
