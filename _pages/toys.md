@@ -4,6 +4,13 @@ title: "雑貨"
 permalink: /toys/
 author_profile: true
 ---
+## M/M/1 Queue Simulation — Naor (1969)
+
+An animated M/M/1 queue simulation based on Naor's "The Regulation of Queue Size by Levying Tolls." Customers arrive via a Poisson process and are served with exponentially distributed service times. Adjust arrival rate, service rate, reward, and waiting cost; compare individual optimal, social optimal, and revenue-maximizing queue-size regimes. Visualizes the congestion externality in real time.
+
+[Open Simulation →](/toys/mm1-queue/)
+
+
 
 Some interactive toys & simulations I built for fun.
 
