@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "micro4"
+title: "Microeconomics (Social choice theory)"
 permalink: /notes/microeconomics-4/
 author_profile: true
 ---
@@ -15,6 +15,7 @@ I am deeply grateful to **Prof. Satoshi Nakada** ([personal website](https://sit
 | | File |
 |---|------|
 | **My class notes** | [Waseda_GSE_MICRO_4.pdf](https://kishtonzhang.github.io/files/notes/Waseda_GSE_MICRO_4.pdf) |
+| **Final exam** | [final exam.pdf](https://kishtonzhang.github.io/files/notes/final%20exam.pdf) |
 
 ---
 
